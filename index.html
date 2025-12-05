@@ -3,35 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barbearia Precision - Agendamentos</title>
+    <title>Precision Barbers - Agendamentos</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        /* Efeito de vidro para modais */
-        .glass-effect {
-            background: rgba(15, 15, 15, 0.85);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 165, 0, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        /* Efeitos de brilho */
-        .glow {
-            box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
-        }
-        
-        .glow-text {
-            text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
-        }
-    </style>
 </head>
 <body>
     <!-- Efeitos de fundo -->
@@ -681,14 +658,6 @@
                                 <div class="input-border"></div>
                             </div>
                             
-                            <div class="input-group">
-                                <div class="input-icon">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <input type="email" id="edit-email" placeholder="E-mail" class="input-glass" required readonly>
-                                <div class="input-border"></div>
-                            </div>
-                            
                             <div class="form-actions">
                                 <button type="button" class="btn-secondary modal-close">
                                     <i class="fas fa-times"></i>
@@ -750,6 +719,11 @@
                                 <span>Serviços</span>
                                 <div class="tab-glow"></div>
                             </button>
+                            <button class="admin-tab" data-tab="configuracoes">
+                                <i class="fas fa-cogs"></i>
+                                <span>Configurações</span>
+                                <div class="tab-glow"></div>
+                            </button>
                         </div>
                     </div>
 
@@ -800,7 +774,7 @@
                                 </div>
                                 <div class="stat-content">
                                     <h3 class="stat-value" id="barbers-stats">0</h3>
-                                    <p class="stat-label">Especialistas</p>
+                                    <p class="stat-label">Especialistas Ativos</p>
                                 </div>
                             </div>
                             
@@ -861,22 +835,24 @@
                             </div>
                             
                             <div class="table-container glass-effect">
-                                <table class="admin-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Cliente</th>
-                                            <th>Serviço</th>
-                                            <th>Especialista</th>
-                                            <th>Data/Hora</th>
-                                            <th>Valor</th>
-                                            <th>Status</th>
-                                            <th>Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="admin-appointments">
-                                        <!-- Carregado via JS -->
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="admin-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Cliente</th>
+                                                <th>Serviço</th>
+                                                <th>Especialista</th>
+                                                <th>Data/Hora</th>
+                                                <th>Valor</th>
+                                                <th>Status</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="admin-appointments">
+                                            <!-- Carregado via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -914,6 +890,68 @@
                             <div class="grid-container">
                                 <div class="admin-grid" id="admin-services">
                                     <!-- Carregado via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configurações -->
+                    <div id="configuracoes" class="admin-tab-content">
+                        <div class="admin-section">
+                            <h2 class="section-title">Configurações da Barbearia</h2>
+                            
+                            <div class="settings-container">
+                                <div class="settings-card glass-effect">
+                                    <h3 class="settings-title">
+                                        <i class="fas fa-clock"></i>
+                                        Horário de Funcionamento
+                                    </h3>
+                                    <div id="business-hours-container">
+                                        <!-- Horários carregados via JS -->
+                                    </div>
+                                    <button class="btn-secondary" id="save-business-hours">
+                                        <i class="fas fa-save"></i>
+                                        <span>Salvar Horários</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="settings-card glass-effect">
+                                    <h3 class="settings-title">
+                                        <i class="fas fa-calendar-times"></i>
+                                        Dias de Fechamento
+                                    </h3>
+                                    <div class="form-group">
+                                        <label>Adicionar data de fechamento:</label>
+                                        <div class="input-group">
+                                            <input type="date" id="new-closure-date" class="input-glass">
+                                            <button class="btn-primary" id="add-closure-date">
+                                                <i class="fas fa-plus"></i>
+                                                Adicionar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="closure-days-list">
+                                        <!-- Dias de fechamento carregados via JS -->
+                                    </div>
+                                </div>
+                                
+                                <div class="settings-card glass-effect">
+                                    <h3 class="settings-title">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Configurações de Agendamento
+                                    </h3>
+                                    <div class="form-group">
+                                        <label>Intervalo entre agendamentos (minutos):</label>
+                                        <input type="number" id="interval-minutes" class="input-glass" min="15" value="30">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Dias máximos para agendar futuramente:</label>
+                                        <input type="number" id="max-days-ahead" class="input-glass" min="1" value="60">
+                                    </div>
+                                    <button class="btn-primary btn-glow" id="save-settings">
+                                        <i class="fas fa-save"></i>
+                                        <span>Salvar Configurações</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -962,9 +1000,17 @@
                             
                             <div class="form-group">
                                 <label class="form-label">Serviços Oferecidos</label>
-                                <div class="services-checkbox" id="barber-services-checklist">
+                                <div class="services-checklist" id="barber-services-checklist">
                                     <!-- Carregado via JS -->
                                 </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="barber-active" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span>Especialista ativo</span>
+                                </label>
                             </div>
                             
                             <div class="form-actions">
@@ -1031,10 +1077,10 @@
                                 </div>
                             </div>
                             
-                            <div class="form-checkbox">
+                            <div class="form-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" id="service-active" checked>
-                                    <div class="checkbox-custom"></div>
+                                    <span class="checkbox-custom"></span>
                                     <span>Serviço ativo</span>
                                 </label>
                             </div>
@@ -1047,6 +1093,46 @@
                                 <button type="submit" class="btn-primary btn-glow">
                                     <i class="fas fa-save"></i>
                                     <span>Salvar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal Status Agendamento -->
+                <div id="status-modal" class="modal-overlay">
+                    <div class="modal-container glass-effect">
+                        <div class="modal-header">
+                            <div class="modal-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <h2 class="modal-title">Alterar Status</h2>
+                            <button class="modal-close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="status-form">
+                            <input type="hidden" id="status-appointment-id">
+                            
+                            <div class="form-group">
+                                <label>Novo Status:</label>
+                                <select id="new-status" class="input-glass" required>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="confirmado">Confirmado</option>
+                                    <option value="realizado">Realizado</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary modal-close">
+                                    <i class="fas fa-times"></i>
+                                    <span>Cancelar</span>
+                                </button>
+                                <button type="submit" class="btn-primary btn-glow">
+                                    <i class="fas fa-save"></i>
+                                    <span>Atualizar Status</span>
                                 </button>
                             </div>
                         </form>
@@ -1082,15 +1168,15 @@
                     <div class="footer-contact">
                         <p class="contact-item">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>Av. Principal, 123 - Centro</span>
+                            <span id="business-address">Av. Principal, 123 - Centro</span>
                         </p>
                         <p class="contact-item">
                             <i class="fas fa-phone"></i>
-                            <span>(11) 9999-9999</span>
+                            <span id="business-phone">(11) 9999-9999</span>
                         </p>
                         <p class="contact-item">
                             <i class="fas fa-clock"></i>
-                            <span>Seg-Sex: 9h-19h | Sáb: 9h-17h</span>
+                            <span id="business-hours">Seg-Sex: 9h-19h | Sáb: 9h-17h</span>
                         </p>
                     </div>
                 </div>
