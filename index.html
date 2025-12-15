@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precision Barbers - Liquidglass</title>
+    <title>Precision Barbers - Liquidglass Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
-           RESET & CONFIGURAÇÕES GLOBAIS
+           1. CONFIGURAÇÕES GLOBAIS & VARIÁVEIS
            ========================================= */
         :root {
-            /* Palette Orange & Black (Mantida) */
             --primary: #000000;
             --text: #FFFFFF;
             --accent: #FF6B00;
-            --accent-glow: #ff6b0080;
+            --accent-glow: rgba(255, 107, 0, 0.5);
             
             /* Glass Variables */
             --glass-bg: rgba(20, 20, 20, 0.65);
@@ -25,7 +24,6 @@
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             --blur-strength: 16px;
             
-            /* Fontes */
             --font-main: 'Inter', sans-serif;
             --font-display: 'Space Grotesk', sans-serif;
         }
@@ -42,54 +40,36 @@
         }
 
         /* =========================================
-           LIQUID BACKGROUND (ESTÉTICA NOVA)
+           2. LIQUID BACKGROUND (Fundo Animado)
            ========================================= */
         .liquid-wrapper {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-            background: #050505;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden; background: #050505;
         }
 
         .liquid-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.6;
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); opacity: 0.6;
             animation: float 10s infinite ease-in-out alternate;
         }
 
         .orb-1 {
-            width: 50vw;
-            height: 50vw;
+            width: 50vw; height: 50vw;
             background: radial-gradient(circle, var(--accent), transparent 70%);
-            top: -10%;
-            left: -10%;
-            animation-duration: 15s;
+            top: -10%; left: -10%; animation-duration: 15s;
         }
 
         .orb-2 {
-            width: 40vw;
-            height: 40vw;
+            width: 40vw; height: 40vw;
             background: radial-gradient(circle, #cc4400, transparent 70%);
-            bottom: -10%;
-            right: -10%;
-            animation-duration: 12s;
-            animation-delay: -5s;
+            bottom: -10%; right: -10%; animation-duration: 12s; animation-delay: -5s;
         }
 
         .orb-3 {
-            width: 30vw;
-            height: 30vw;
+            width: 30vw; height: 30vw;
             background: radial-gradient(circle, #ff8833, transparent 70%);
-            top: 40%;
-            left: 40%;
-            animation-duration: 20s;
-            opacity: 0.3;
+            top: 40%; left: 40%; animation-duration: 20s; opacity: 0.3;
         }
 
         @keyframes float {
@@ -98,21 +78,14 @@
             100% { transform: translate(-20px, -20px) scale(0.9); }
         }
 
-        /* Noise Texture para realismo */
         .noise-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.05;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.05; pointer-events: none;
             background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bU9jdGF2ZXM9IjMiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjbm9pc2UpIiBvcGFjaXR5PSIxIi8+PC9zdmc+');
         }
 
         /* =========================================
-           GLASSMORPHISM COMPONENTS
+           3. ESTILOS GLASSMORPHISM
            ========================================= */
         .glass-effect {
             background: var(--glass-bg);
@@ -125,537 +98,103 @@
             border-radius: 24px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 
-        /* =========================================
-           NAVBAR
-           ========================================= */
+        /* Navbar */
         .navbar {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 1200px;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            border-radius: 50px; /* Pill shape */
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 1200px; z-index: 1000;
+            padding: 1rem 2rem; border-radius: 50px;
         }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; padding: 0; }
+        
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon { font-size: 1.5rem; color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
+        .logo-text { display: flex; flex-direction: column; line-height: 1; }
+        .logo-primary { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: #fff; }
+        .logo-secondary { font-size: 0.7rem; letter-spacing: 3px; color: var(--accent); }
 
-        .navbar .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            font-size: 1.5rem;
-            color: var(--accent);
-            text-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1;
-        }
-
-        .logo-primary {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: #fff;
-        }
-
-        .logo-secondary {
-            font-size: 0.7rem;
-            letter-spacing: 3px;
-            color: var(--accent);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: rgba(255,255,255,0.7);
-            font-weight: 500;
-            position: relative;
-            transition: 0.3s;
-            padding: 0.5rem 0;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-link { text-decoration: none; color: rgba(255,255,255,0.7); font-weight: 500; transition: 0.3s; position: relative; }
+        .nav-link:hover, .nav-link.active { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
         .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 2px;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
-            border-radius: 2px;
+            content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent);
         }
 
-        /* =========================================
-           BUTTONS & INPUTS
-           ========================================= */
+        /* Botões & Inputs */
         .btn-primary {
             background: linear-gradient(135deg, var(--accent), #cc5500);
-            color: #fff;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px var(--accent-glow), inset 0 2px 5px rgba(255,255,255,0.3);
+            color: #fff; border: none; padding: 12px 30px; border-radius: 30px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            display: inline-flex; align-items: center; gap: 10px;
+            box-shadow: 0 4px 15px var(--accent-glow);
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--accent-glow), inset 0 2px 5px rgba(255,255,255,0.3);
-        }
-
-        .btn-primary:disabled {
-            filter: grayscale(1);
-            cursor: not-allowed;
-        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
+        .btn-primary:disabled { filter: grayscale(1); cursor: not-allowed; }
 
         .btn-secondary {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #fff;
-            padding: 12px 30px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; padding: 12px 30px; border-radius: 30px; cursor: pointer;
+            transition: 0.3s; display: inline-flex; align-items: center; gap: 10px;
         }
-
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--accent);
-        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
+        .btn-secondary.active { background: var(--accent); border-color: var(--accent); }
 
         .btn-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.3s;
+            width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05); color: #fff; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
         }
+        .btn-icon:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        .btn-icon:hover {
-            background: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
+        input, select {
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 15px; color: #fff; transition: 0.3s; outline: none;
         }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        input, select, textarea {
-            width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 15px;
-            color: #fff;
-            font-family: var(--font-main);
-            transition: 0.3s;
-            outline: none;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-            background: rgba(0,0,0,0.5);
-        }
-
-        /* =========================================
-           PAGES & HERO
-           ========================================= */
-        .page {
-            display: none;
-            padding-top: 140px;
-            min-height: 100vh;
-            animation: fadeIn 0.6s ease-out;
-        }
-        
+        /* Páginas */
+        .page { display: none; padding-top: 140px; min-height: 100vh; animation: fadeIn 0.6s ease-out; }
         .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .hero-section {
-            text-align: center;
-            padding: 4rem 0;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            background: rgba(255, 107, 0, 0.15);
-            color: var(--accent);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            border: 1px solid rgba(255, 107, 0, 0.3);
-            margin-bottom: 2rem;
-        }
-
-        .hero-title {
-            font-family: var(--font-display);
-            font-size: 4rem;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-gradient {
-            background: linear-gradient(to right, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-description {
-            font-size: 1.2rem;
-            color: rgba(255,255,255,0.7);
-            max-width: 600px;
-            margin: 0 auto 3rem auto;
-        }
-
-        .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 4rem;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .stat-card:hover {
-            background: rgba(255,255,255,0.08);
-            transform: translateY(-5px);
-            border-color: var(--accent);
-        }
-
-        .stat-value {
-            font-family: var(--font-display);
-            font-size: 2.5rem;
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        /* =========================================
-           CARDS & GRIDS (Serviços, Barbeiros)
-           ========================================= */
-        .services-grid, .grid-container, .admin-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .service-card, .barber-card, .admin-card {
-            padding: 2rem;
-            cursor: pointer;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .service-card:hover, .barber-card:hover {
-            transform: scale(1.03);
-            border-color: var(--accent);
-            box-shadow: 0 10px 40px rgba(255, 107, 0, 0.15);
-        }
-
-        .service-card.selected, .barber-card.selected {
-            border-color: var(--accent);
-            background: rgba(255, 107, 0, 0.1);
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        .service-icon, .feature-icon .icon-wrapper {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-        }
-
-        .service-price {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin: 10px 0;
-            font-family: var(--font-display);
-        }
-
-        /* =========================================
-           PROGRESS STEPS
-           ========================================= */
-        .progress-container { margin: 3rem 0; }
+        /* Componentes Específicos */
+        .hero-title { font-family: var(--font-display); font-size: 4rem; line-height: 1.1; margin-bottom: 1.5rem; text-align: center; }
+        .hero-gradient { background: linear-gradient(to right, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .highlight { color: var(--accent); }
         
-        .progress-steps {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-        }
+        .services-grid, .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 2rem; }
+        .card { padding: 2rem; transition: 0.4s; cursor: pointer; position: relative; overflow: hidden; }
+        .card:hover { transform: scale(1.03); border-color: var(--accent); box-shadow: 0 10px 40px rgba(255, 107, 0, 0.15); }
+        .card.selected { border-color: var(--accent); background: rgba(255, 107, 0, 0.1); }
 
-        .progress-steps::before {
-            content: '';
-            position: absolute;
-            top: 25px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: rgba(255,255,255,0.1);
-            z-index: -1;
-        }
-
-        .progress-step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            background: var(--primary); /* Para cobrir a linha */
-            padding: 0 10px;
-        }
-
-        .step-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            transition: 0.3s;
-        }
-
-        .progress-step.active .step-circle {
-            background: var(--accent);
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-            color: #fff;
-        }
-
-        /* =========================================
-           CALENDAR & SLOTS
-           ========================================= */
-        .calendar-container, .times-container {
-            padding: 1.5rem;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin-top: 1rem;
-        }
-
-        .calendar-day {
-            padding: 10px;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .calendar-day:hover:not(.empty) {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .calendar-day.selected {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .time-slots {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
-            margin-top: 1rem;
-        }
-
-        .time-slot {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.9rem;
-        }
-
-        .time-slot.selected {
-            background: var(--accent);
-            border-color: var(--accent);
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        /* =========================================
-           TABLES
-           ========================================= */
-        .table-responsive {
-            overflow-x: auto;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        th {
-            color: var(--accent);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
-        /* =========================================
-           MODALS
-           ========================================= */
+        /* Modais */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            display: none; /* JS controla isso */
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 2000;
+            display: none; align-items: center; justify-content: center; padding: 1rem;
         }
+        .modal-container { width: 100%; max-width: 450px; max-height: 90vh; overflow-y: auto; padding: 2rem; }
 
-        .modal-container {
-            width: 100%;
-            max-width: 500px;
-            animation: slideUp 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 2rem;
-        }
+        /* Utilidades */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
         
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .input-group { position: relative; margin-bottom: 1.5rem; }
-        .input-icon { position: absolute; top: 15px; left: 15px; color: rgba(255,255,255,0.5); }
-        .input-glass { padding-left: 45px; }
-
-        /* =========================================
-           RESPONSIVE
-           ========================================= */
-        .menu-toggle {
-            display: none;
-            color: #fff;
-            font-size: 1.5rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
+        /* Mobile */
+        .menu-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
         @media (max-width: 768px) {
-            .navbar {
-                width: 100%;
-                top: 0;
-                border-radius: 0;
-                border-top: none;
-                border-left: none;
-                border-right: none;
-                background: rgba(10,10,10, 0.95);
-            }
-
+            .navbar { width: 100%; top: 0; border-radius: 0; background: rgba(10,10,10, 0.95); }
             .menu-toggle { display: block; }
-
             .nav-links {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                flex-direction: column;
-                background: rgba(10,10,10,0.98);
-                padding: 2rem;
-                clip-path: circle(0% at 100% 0%);
+                position: absolute; top: 100%; left: 0; width: 100%; flex-direction: column;
+                background: rgba(10,10,10,0.98); padding: 2rem; clip-path: circle(0% at 100% 0%);
                 transition: 0.5s ease-in-out;
             }
-
-            .nav-links.active {
-                clip-path: circle(150% at 100% 0%);
-            }
-
+            .nav-links.active { clip-path: circle(150% at 100% 0%); }
             .hero-title { font-size: 2.5rem; }
-            
-            .datetime-selection { grid-template-columns: 1fr; }
-            
-            .step-label { display: none; } /* Oculta labels em mobile para limpar */
+            .step-label { display: none; }
         }
-
-        /* Helpers */
-        .hidden { display: none !important; }
-        .section-header { text-align: center; margin-bottom: 3rem; }
-        .section-title { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .highlight { color: var(--accent); }
     </style>
 </head>
 <body>
@@ -669,18 +208,18 @@
 
     <nav class="navbar glass-effect">
         <div class="container">
-            <a href="#" class="logo" data-page="home">
+            <a href="#" class="logo" onclick="showPage('home')">
                 <div class="logo-icon"><i class="fas fa-cut"></i></div>
                 <div class="logo-text">
                     <span class="logo-primary">PRECISION</span>
-                    <span class="logo-secondary">BARBERS</span>
+                    <span class="logo-secondary">LIQUID</span>
                 </div>
             </a>
             
             <div class="nav-links">
                 <a href="#" data-page="home" class="nav-link active">Home</a>
                 <a href="#" data-page="agendar" class="nav-link">Agendar</a>
-                <a href="#" data-page="meus-agendamentos" class="nav-link">Meus Agendamentos</a>
+                <a href="#" data-page="meus-agendamentos" class="nav-link">Meus Cortes</a>
                 <a href="#" data-page="admin" class="nav-link hidden">Admin</a>
                 
                 <div class="user-section">
@@ -693,198 +232,81 @@
                 </div>
             </div>
             
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
+            <button class="menu-toggle"><i class="fas fa-bars"></i></button>
         </div>
     </nav>
 
-    <div id="login-modal" class="modal-overlay">
-        <div class="modal-container glass-effect">
-            <div class="modal-header">
-                <h2 class="modal-title">Acesso <span class="highlight">Liquid</span></h2>
-                <button class="modal-close btn-icon"><i class="fas fa-times"></i></button>
-            </div>
-            
-            <div class="tabs" style="display:flex; gap:10px; margin: 20px 0;">
-                <button class="tab-btn active btn-secondary" style="flex:1" data-tab="login">Login</button>
-                <button class="tab-btn btn-secondary" style="flex:1" data-tab="register">Cadastro</button>
-            </div>
-
-            <form id="login-form" class="auth-form active">
-                <div class="input-group">
-                    <div class="input-icon"><i class="fas fa-envelope"></i></div>
-                    <input type="email" id="login-email" placeholder="E-mail" class="input-glass" required>
-                </div>
-                <div class="input-group">
-                    <div class="input-icon"><i class="fas fa-lock"></i></div>
-                    <input type="password" id="login-password" placeholder="Senha" class="input-glass" required>
-                </div>
-                <button type="submit" class="btn-primary" style="width:100%">Acessar Conta</button>
-                <button type="button" id="forgot-password" class="btn-text" style="margin-top:10px; color:rgba(255,255,255,0.6); background:none; border:none; cursor:pointer;">Esqueci minha senha</button>
-            </form>
-
-            <form id="register-form" class="auth-form hidden">
-                <div class="input-group">
-                    <div class="input-icon"><i class="fas fa-user"></i></div>
-                    <input type="text" id="register-name" placeholder="Nome Completo" class="input-glass" required>
-                </div>
-                <div class="input-group">
-                    <div class="input-icon"><i class="fas fa-phone"></i></div>
-                    <input type="tel" id="register-phone" placeholder="Telefone" class="input-glass" required>
-                </div>
-                <div class="input-group">
-                    <div class="input-icon"><i class="fas fa-envelope"></i></div>
-                    <input type="email" id="register-email" placeholder="E-mail" class="input-glass" required>
-                </div>
-                <div class="input-group">
-                    <div class="input-icon"><i class="fas fa-lock"></i></div>
-                    <input type="password" id="register-password" placeholder="Senha" class="input-glass" minlength="6" required>
-                </div>
-                <div class="input-group">
-                    <div class="input-icon"><i class="fas fa-lock"></i></div>
-                    <input type="password" id="register-confirm" placeholder="Confirmar Senha" class="input-glass" minlength="6" required>
-                </div>
-                <button type="submit" class="btn-primary" style="width:100%">Criar Conta</button>
-            </form>
-
-            <form id="recover-form" class="auth-form hidden">
-                <div class="input-group">
-                    <div class="input-icon"><i class="fas fa-envelope"></i></div>
-                    <input type="email" id="recover-email" placeholder="Seu e-mail" class="input-glass" required>
-                </div>
-                <button type="submit" class="btn-primary" style="width:100%">Enviar Link</button>
-                <button type="button" id="back-to-login" class="btn-text" style="margin-top:10px; background:none; border:none; color:white; cursor:pointer;">Voltar</button>
-            </form>
-        </div>
-    </div>
-
     <main id="content">
+        
         <section id="home-page" class="page active">
-            <div class="hero-section">
-                <div class="container">
-                    <div class="hero-badge">EXPERIÊNCIA PREMIUM</div>
-                    <h1 class="hero-title">PRECISION <br><span class="hero-gradient">LIQUID STYLE</span></h1>
-                    <p class="hero-description">Onde a precisão do corte encontra a fluidez do estilo moderno.</p>
-                    
-                    <div class="hero-actions">
-                        <button class="btn-primary" data-page="agendar">
-                            <i class="fas fa-calendar-plus"></i> Agendar Agora
-                        </button>
-                        <button class="btn-secondary" data-page="meus-agendamentos">
-                            <i class="fas fa-list"></i> Meus Cortes
-                        </button>
-                    </div>
+            <div class="container text-center" style="margin-top: 4rem;">
+                <span class="highlight" style="border: 1px solid var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; letter-spacing: 2px;">ESTILO & PRECISÃO</span>
+                <h1 class="hero-title" style="margin-top: 2rem;">PRECISION <br><span class="hero-gradient">LIQUID STYLE</span></h1>
+                <p style="color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto 3rem;">
+                    Agende seu horário com os melhores profissionais. Ambiente moderno, técnica clássica.
+                </p>
+                
+                <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                    <button class="btn-primary" onclick="showPage('agendar')">Agendar Agora</button>
+                    <button class="btn-secondary" onclick="showPage('meus-agendamentos')">Ver Meus Horários</button>
+                </div>
 
-                    <div class="hero-stats">
-                        <div class="stat-card glass-effect">
-                            <div class="stat-value" id="barber-count">0</div>
-                            <div class="stat-label">Especialistas</div>
-                        </div>
-                        <div class="stat-card glass-effect">
-                            <div class="stat-value" id="appointments-today">0</div>
-                            <div class="stat-label">Hoje</div>
-                        </div>
-                        <div class="stat-card glass-effect">
-                            <div class="stat-value">4.9</div>
-                            <div class="stat-label">Estrelas</div>
-                        </div>
+                <div class="services-grid" style="margin-top: 5rem;">
+                    <div class="card glass-effect">
+                        <i class="fas fa-cut" style="font-size: 2rem; color: var(--accent); margin-bottom: 1rem;"></i>
+                        <h3>Corte Cabelo</h3>
+                        <p>Estilo moderno ou clássico.</p>
+                    </div>
+                    <div class="card glass-effect">
+                        <i class="fas fa-user-tie" style="font-size: 2rem; color: var(--accent); margin-bottom: 1rem;"></i>
+                        <h3>Barba Completa</h3>
+                        <p>Toalha quente e navalha.</p>
+                    </div>
+                    <div class="card glass-effect">
+                        <i class="fas fa-spray-can" style="font-size: 2rem; color: var(--accent); margin-bottom: 1rem;"></i>
+                        <h3>Acabamento</h3>
+                        <p>Pezinho e sobrancelha.</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="container">
-                <section class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">Serviços <span class="highlight">Glass</span></h2>
-                        <p>Selecione sua experiência</p>
-                    </div>
-                    <div class="services-grid" id="services-list">
-                        </div>
-                </section>
             </div>
         </section>
 
         <section id="agendar-page" class="page">
             <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Novo <span class="highlight">Agendamento</span></h2>
+                <h2 class="section-title text-center">Novo <span class="highlight">Agendamento</span></h2>
+                
+                <div style="display: flex; justify-content: space-between; margin: 2rem 0; position: relative;">
+                    <div style="position: absolute; top: 15px; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); z-index: -1;"></div>
+                    <div class="progress-step active" id="p-step-1" style="background: var(--primary); padding: 0 10px;"><div style="width: 30px; height: 30px; background: var(--accent); border-radius: 50%; display: flex; justify-content: center; align-items: center;">1</div></div>
+                    <div class="progress-step" id="p-step-2" style="background: var(--primary); padding: 0 10px;"><div style="width: 30px; height: 30px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center;">2</div></div>
+                    <div class="progress-step" id="p-step-3" style="background: var(--primary); padding: 0 10px;"><div style="width: 30px; height: 30px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center;">3</div></div>
                 </div>
 
-                <div class="progress-container">
-                    <div class="progress-steps">
-                        <div class="progress-step active" data-step="1">
-                            <div class="step-circle">1</div>
-                            <span class="step-label">Serviço</span>
-                        </div>
-                        <div class="progress-step" data-step="2">
-                            <div class="step-circle">2</div>
-                            <span class="step-label">Profissional</span>
-                        </div>
-                        <div class="progress-step" data-step="3">
-                            <div class="step-circle">3</div>
-                            <span class="step-label">Data</span>
-                        </div>
-                        <div class="progress-step" data-step="4">
-                            <div class="step-circle">4</div>
-                            <span class="step-label">Fim</span>
-                        </div>
-                    </div>
+                <div id="step-1" class="step-content glass-effect" style="padding: 2rem;">
+                    <h3>Escolha o Serviço</h3>
+                    <div class="grid-container" id="booking-services"></div>
                 </div>
 
-                <div id="step-1" class="step-content active glass-effect" style="padding:2rem">
-                    <h3 style="margin-bottom:2rem; text-align:center;">Selecione o Serviço</h3>
-                    <div class="services-grid" id="booking-services"></div>
-                    <div class="step-actions" style="margin-top:2rem; display:flex; justify-content:flex-end;">
-                        <button class="btn-primary next-step" data-next="2" disabled>Continuar</button>
-                    </div>
-                </div>
-
-                <div id="step-2" class="step-content glass-effect hidden" style="padding:2rem">
-                    <h3 style="margin-bottom:2rem; text-align:center;">Selecione o Profissional</h3>
+                <div id="step-2" class="step-content hidden glass-effect" style="padding: 2rem;">
+                    <h3>Escolha o Profissional</h3>
                     <div class="grid-container" id="booking-barbers"></div>
-                    <div class="step-actions" style="margin-top:2rem; display:flex; justify-content:space-between;">
-                        <button class="btn-secondary prev-step" data-prev="1">Voltar</button>
-                        <button class="btn-primary next-step" data-next="3" disabled>Continuar</button>
+                    <div style="margin-top: 2rem;">
+                        <button class="btn-secondary" onclick="changeStep(1)">Voltar</button>
                     </div>
                 </div>
 
-                <div id="step-3" class="step-content hidden">
-                    <div class="datetime-selection" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                        <div class="calendar-container glass-effect">
-                            <div class="calendar-header" style="display:flex; justify-content:space-between; margin-bottom:1rem;">
-                                <button id="prev-month" class="btn-icon"><i class="fas fa-chevron-left"></i></button>
-                                <h3 id="current-month">Mês</h3>
-                                <button id="next-month" class="btn-icon"><i class="fas fa-chevron-right"></i></button>
-                            </div>
-                            <div class="calendar-weekdays" style="display:grid; grid-template-columns:repeat(7,1fr); text-align:center;">
-                                <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
-                            </div>
-                            <div class="calendar-grid" id="calendar"></div>
+                <div id="step-3" class="step-content hidden glass-effect" style="padding: 2rem;">
+                    <h3>Data e Hora</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 1rem;">
+                        <div>
+                            <input type="date" id="booking-date" class="input-glass" onchange="generateTimeSlots()">
                         </div>
-                        <div class="times-container glass-effect">
-                            <h3 style="margin-bottom:10px;">Horários: <span id="selected-date" class="highlight"></span></h3>
-                            <div class="time-slots" id="time-slots"></div>
-                        </div>
+                        <div id="time-slots" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                            </div>
                     </div>
-                    <div class="step-actions" style="margin-top:2rem; display:flex; justify-content:space-between;">
-                        <button class="btn-secondary prev-step" data-prev="2">Voltar</button>
-                        <button class="btn-primary next-step" data-next="4" disabled>Continuar</button>
-                    </div>
-                </div>
-
-                <div id="step-4" class="step-content glass-effect hidden" style="padding:2rem;">
-                    <h3 style="text-align:center; margin-bottom:2rem;">Confirmação</h3>
-                    <div class="confirmation-details" style="display:grid; gap:15px; margin-bottom:2rem;">
-                        <div class="detail-row"><span>Serviço:</span> <strong id="confirm-service" class="highlight">-</strong></div>
-                        <div class="detail-row"><span>Profissional:</span> <strong id="confirm-barber" class="highlight">-</strong></div>
-                        <div class="detail-row"><span>Data:</span> <strong id="confirm-date" class="highlight">-</strong></div>
-                        <div class="detail-row"><span>Horário:</span> <strong id="confirm-time" class="highlight">-</strong></div>
-                        <div class="detail-row" style="font-size:1.5rem; margin-top:1rem;">Total: <strong id="confirm-total" class="highlight">-</strong></div>
-                    </div>
-                    <div class="step-actions" style="display:flex; justify-content:space-between;">
-                        <button class="btn-secondary prev-step" data-prev="3">Alterar</button>
-                        <button id="confirm-booking" class="btn-primary">Confirmar Agendamento</button>
+                    <div style="margin-top: 2rem; display: flex; justify-content: space-between;">
+                        <button class="btn-secondary" onclick="changeStep(2)">Voltar</button>
+                        <button class="btn-primary" id="confirm-booking-btn">Confirmar</button>
                     </div>
                 </div>
             </div>
@@ -892,101 +314,419 @@
 
         <section id="meus-agendamentos-page" class="page">
             <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Meus <span class="highlight">Agendamentos</span></h2>
-                </div>
-                
-                <div class="profile-card glass-effect" style="margin-bottom:2rem; padding:2rem; display:flex; align-items:center; gap:20px;">
-                    <div class="profile-icon" style="font-size:3rem; color:var(--accent);"><i class="fas fa-user-circle"></i></div>
-                    <div>
-                        <h3 id="user-name" style="font-size:1.5rem;">Carregando...</h3>
-                        <p id="user-email" style="color:rgba(255,255,255,0.6)"></p>
-                    </div>
-                </div>
-
-                <div class="glass-effect" style="padding:2rem;">
-                    <h3 style="margin-bottom:1rem;">Próximos</h3>
-                    <div id="upcoming-list" class="appointments-list"></div>
-                    
-                    <h3 style="margin:2rem 0 1rem 0;">Histórico</h3>
-                    <div id="history-list" class="appointments-list"></div>
-                </div>
+                <h2 class="section-title text-center">Meus <span class="highlight">Cortes</span></h2>
+                <div id="upcoming-list" style="margin-top: 2rem;"></div>
             </div>
         </section>
 
         <section id="admin-page" class="page">
             <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Painel <span class="highlight">Admin</span></h2>
-                </div>
+                <h2 class="section-title text-center">Painel <span class="highlight">Admin</span></h2>
                 
-                <div id="admin-access" class="access-denied glass-effect" style="text-align:center; padding:3rem;">
-                    <i class="fas fa-lock" style="font-size:3rem; color:red; margin-bottom:1rem;"></i>
-                    <h2>Acesso Restrito</h2>
-                    <button class="btn-secondary" data-page="home" style="margin-top:1rem;">Voltar</button>
-                </div>
-
                 <div id="admin-content" class="hidden">
-                    <div class="admin-tabs" style="display:flex; gap:10px; overflow-x:auto; margin-bottom:2rem;">
-                        <button class="admin-tab active btn-secondary" data-tab="dashboard">Dashboard</button>
-                        <button class="admin-tab btn-secondary" data-tab="agendamentos">Agendamentos</button>
-                        <button class="admin-tab btn-secondary" data-tab="barbeiros">Profissionais</button>
-                        <button class="admin-tab btn-secondary" data-tab="servicos">Serviços</button>
+                    <div style="display: flex; gap: 10px; margin-bottom: 2rem; overflow-x: auto;">
+                        <button class="btn-secondary active admin-tab" data-tab="adm-dash">Dashboard</button>
+                        <button class="btn-secondary admin-tab" data-tab="adm-users">Usuários</button>
+                        <button class="btn-secondary admin-tab" data-tab="adm-config">Configurações</button>
                     </div>
 
-                    <div id="dashboard" class="admin-tab-content active">
-                        <div class="hero-stats" style="margin-top:0;">
-                            <div class="stat-card glass-effect">
-                                <div class="stat-value" id="today-stats">0</div>
-                                <div class="stat-label">Hoje</div>
+                    <div id="adm-dash" class="admin-panel active">
+                        <div class="grid-container">
+                            <div class="card glass-effect">
+                                <h3>Agendamentos</h3>
+                                <p style="font-size: 2rem; color: var(--accent);">0</p>
                             </div>
-                            <div class="stat-card glass-effect">
-                                <div class="stat-value" id="revenue-stats">R$ 0</div>
-                                <div class="stat-label">Receita Mês</div>
+                            <div class="card glass-effect">
+                                <h3>Receita</h3>
+                                <p style="font-size: 2rem; color: var(--accent);">R$ 0,00</p>
                             </div>
                         </div>
+                        <h3 style="margin-top: 2rem;">Últimos Agendamentos</h3>
+                        <div id="admin-appointments-list" style="margin-top: 1rem;"></div>
+                    </div>
+                    
+                    <div id="adm-users" class="admin-panel hidden">
+                        <p>Lista de usuários (Em desenvolvimento)</p>
                     </div>
 
-                    <div id="agendamentos" class="admin-tab-content hidden glass-effect" style="padding:1rem; overflow-x:auto;">
-                        <table class="admin-table">
-                            <thead>
-                                <tr><th>Cliente</th><th>Serviço</th><th>Data</th><th>Status</th><th>Ações</th></tr>
-                            </thead>
-                            <tbody id="admin-appointments"></tbody>
-                        </table>
-                    </div>
-                    <div id="barbeiros" class="admin-tab-content hidden">
-                        <button class="btn-primary" id="add-barber-btn" style="margin-bottom:1rem;">+ Novo</button>
-                        <div class="grid-container" id="admin-barbers"></div>
-                    </div>
-                    <div id="servicos" class="admin-tab-content hidden">
-                        <button class="btn-primary" id="add-service-btn" style="margin-bottom:1rem;">+ Novo</button>
-                        <div class="grid-container" id="admin-services"></div>
+                    <div id="adm-config" class="admin-panel hidden">
+                        <div id="super-admin-area-container"></div>
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 
-    <div id="notification" class="notification glass-effect hidden" style="position:fixed; top:20px; right:20px; padding:1rem; z-index:3000; border-left:4px solid var(--accent);">
-        <span id="notification-message">Mensagem</span>
-        <button class="notification-close btn-text"><i class="fas fa-times"></i></button>
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-container glass-effect">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <h2>Acesso</h2>
+                <button class="btn-icon modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                <button class="btn-secondary active" style="flex: 1;" onclick="toggleAuthMode('login')">Login</button>
+                <button class="btn-secondary" style="flex: 1;" onclick="toggleAuthMode('register')">Cadastro</button>
+            </div>
+
+            <form id="login-form">
+                <div style="margin-bottom: 1rem;"><input type="email" id="login-email" placeholder="E-mail" required></div>
+                <div style="margin-bottom: 1rem;"><input type="password" id="login-password" placeholder="Senha" required></div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Entrar</button>
+            </form>
+
+            <form id="register-form" class="hidden">
+                <div style="margin-bottom: 1rem;"><input type="text" id="reg-name" placeholder="Nome" required></div>
+                <div style="margin-bottom: 1rem;"><input type="email" id="reg-email" placeholder="E-mail" required></div>
+                <div style="margin-bottom: 1rem;"><input type="password" id="reg-pass" placeholder="Senha (min 6)" required></div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Criar Conta</button>
+            </form>
+        </div>
     </div>
 
-    <div id="loading-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:4000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
-        <div style="width:50px; height:50px; border:4px solid rgba(255,107,0,0.3); border-top-color:var(--accent); border-radius:50%; animation:spin 1s linear infinite;"></div>
-        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+    <div id="notification" class="glass-effect hidden" style="position: fixed; top: 20px; right: 20px; padding: 1rem 2rem; border-left: 4px solid var(--accent); z-index: 3000;">
+        <span id="notif-msg">Mensagem</span>
     </div>
+
+    <div id="loading-overlay" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 4000; display: flex; align-items: center; justify-content: center;">
+        <div style="width: 50px; height: 50px; border: 4px solid var(--accent); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    </div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="app.js"></script> <script>
-        // Pequeno script inline apenas para garantir que o menu mobile funcione com o novo CSS
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.querySelector('.nav-links').classList.toggle('active');
+
+    <script>
+        // 1. CONFIGURAÇÃO FIREBASE & SUPER ADMIN
+        const firebaseConfig = {
+            apiKey: "AIzaSyCHR2POfEPFGG-AbajaEsnBk32bvrru5uM",
+            authDomain: "dbyd-5201e.firebaseapp.com",
+            projectId: "dbyd-5201e",
+            storageBucket: "dbyd-5201e.firebasestorage.app",
+            messagingSenderId: "376910752424",
+            appId: "1:376910752424:web:d64d958c177bdd01e3f09d"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // O E-MAIL DO CHEFE
+        const SUPER_ADMIN_EMAIL = "pablo11ssousa2@gmail.com";
+
+        // ESTADO GLOBAL
+        const state = {
+            user: null,
+            isAdmin: false,
+            isSuperAdmin: false,
+            booking: { service: null, barber: null, date: null, time: null }
+        };
+
+        // DADOS MOCKADOS (Exemplo para funcionamento visual imediato)
+        const servicesData = [
+            { id: '1', nome: 'Corte Degrade', preco: 45 },
+            { id: '2', nome: 'Barba Terapia', preco: 35 },
+            { id: '3', nome: 'Combo Completo', preco: 70 }
+        ];
+        const barbersData = [
+            { id: '1', nome: 'Carlos Silva' },
+            { id: '2', nome: 'André Santos' }
+        ];
+
+        // 2. INICIALIZAÇÃO E AUTH
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthState();
+            setupNavigation();
+            setupAuthForms();
+            setupBookingFlow();
         });
+
+        function checkAuthState() {
+            auth.onAuthStateChanged(async (user) => {
+                state.user = user;
+                if (user) {
+                    document.getElementById('user-status').textContent = user.email.split('@')[0];
+                    document.getElementById('login-btn').classList.add('hidden');
+                    document.getElementById('logout-btn').classList.remove('hidden');
+                    
+                    // VERIFICAÇÃO SUPER ADMIN (PABLO)
+                    if (user.email === SUPER_ADMIN_EMAIL) {
+                        state.isAdmin = true;
+                        state.isSuperAdmin = true;
+                        
+                        // Garante o poder no banco sem ir no console
+                        await db.collection('usuarios').doc(user.uid).set({
+                            admin: true, superAdmin: true, email: user.email
+                        }, { merge: true });
+
+                        showNotification('Bem-vindo Chefe Pablo! 👑');
+                        document.querySelector('[data-page="admin"]').classList.remove('hidden');
+                    } else {
+                        // Verifica usuário comum no banco
+                        const doc = await db.collection('usuarios').doc(user.uid).get();
+                        if(doc.exists && doc.data().admin) {
+                            state.isAdmin = true;
+                            document.querySelector('[data-page="admin"]').classList.remove('hidden');
+                        }
+                    }
+                    loadAppointments();
+                } else {
+                    resetState();
+                }
+            });
+        }
+
+        function resetState() {
+            state.user = null; state.isAdmin = false; state.isSuperAdmin = false;
+            document.getElementById('user-status').textContent = 'Entrar';
+            document.getElementById('login-btn').classList.remove('hidden');
+            document.getElementById('logout-btn').classList.add('hidden');
+            document.querySelector('[data-page="admin"]').classList.add('hidden');
+        }
+
+        // 3. NAVEGAÇÃO
+        function setupNavigation() {
+            document.querySelectorAll('[data-page]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showPage(link.dataset.page);
+                    // Mobile menu toggle logic here if needed
+                });
+            });
+
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                auth.signOut();
+                showPage('home');
+                showNotification('Logout efetuado');
+            });
+            
+            // Menu Mobile
+            document.querySelector('.menu-toggle').addEventListener('click', () => {
+                document.querySelector('.nav-links').classList.toggle('active');
+            });
+            
+            // Modal Close
+            document.querySelectorAll('.modal-close').forEach(btn => {
+                btn.addEventListener('click', () => document.getElementById('login-modal').style.display = 'none');
+            });
+
+            // Login Btn
+            document.getElementById('login-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                if(!state.user) document.getElementById('login-modal').style.display = 'flex';
+            });
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId + '-page').classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`[data-page="${pageId}"]`);
+            if(activeLink) activeLink.classList.add('active');
+
+            if(pageId === 'admin') initAdminPanel();
+        }
+
+        // 4. AUTENTICAÇÃO FORMS
+        function toggleAuthMode(mode) {
+            if(mode === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+            } else {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.remove('hidden');
+            }
+        }
+
+        function setupAuthForms() {
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                showLoading(true);
+                try {
+                    await auth.signInWithEmailAndPassword(
+                        document.getElementById('login-email').value,
+                        document.getElementById('login-password').value
+                    );
+                    document.getElementById('login-modal').style.display = 'none';
+                } catch(err) { showNotification('Erro no login: ' + err.message); }
+                showLoading(false);
+            });
+
+            document.getElementById('register-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                showLoading(true);
+                try {
+                    const email = document.getElementById('reg-email').value;
+                    const cred = await auth.createUserWithEmailAndPassword(
+                        email,
+                        document.getElementById('reg-pass').value
+                    );
+                    
+                    // Se for o Pablo se cadastrando agora, já dá admin
+                    const isPablo = email === SUPER_ADMIN_EMAIL;
+                    await db.collection('usuarios').doc(cred.user.uid).set({
+                        nome: document.getElementById('reg-name').value,
+                        email: email,
+                        admin: isPablo,
+                        superAdmin: isPablo
+                    });
+                    
+                    document.getElementById('login-modal').style.display = 'none';
+                    showNotification('Conta criada com sucesso!');
+                } catch(err) { showNotification('Erro no cadastro: ' + err.message); }
+                showLoading(false);
+            });
+        }
+
+        // 5. AGENDAMENTO
+        function setupBookingFlow() {
+            const container = document.getElementById('booking-services');
+            container.innerHTML = servicesData.map(s => `
+                <div class="card glass-effect" onclick="selectService('${s.id}')">
+                    <h4>${s.nome}</h4>
+                    <p class="highlight">R$ ${s.preco},00</p>
+                </div>
+            `).join('');
+
+            const barberContainer = document.getElementById('booking-barbers');
+            barberContainer.innerHTML = barbersData.map(b => `
+                <div class="card glass-effect" onclick="selectBarber('${b.id}')">
+                    <i class="fas fa-user"></i> <h4>${b.nome}</h4>
+                </div>
+            `).join('');
+
+            document.getElementById('confirm-booking-btn').addEventListener('click', confirmBooking);
+        }
+
+        function selectService(id) {
+            state.booking.service = servicesData.find(s => s.id === id);
+            changeStep(2);
+        }
+        function selectBarber(id) {
+            state.booking.barber = barbersData.find(b => b.id === id);
+            changeStep(3);
+        }
+
+        function changeStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('step-'+step).classList.remove('hidden');
+            
+            // Bolinhas
+            document.querySelectorAll('.progress-step div').forEach(d => {d.style.background='rgba(255,255,255,0.1)';});
+            for(let i=1; i<=step; i++) {
+                document.querySelector('#p-step-'+i+' div').style.background = 'var(--accent)';
+            }
+        }
+
+        function generateTimeSlots() {
+            const date = document.getElementById('booking-date').value;
+            state.booking.date = date;
+            const slots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
+            const container = document.getElementById('time-slots');
+            container.innerHTML = slots.map(t => `
+                <div style="padding: 10px; border: 1px solid white; border-radius: 5px; text-align: center; cursor: pointer;" 
+                     onclick="state.booking.time = '${t}'; this.style.background='var(--accent)'">
+                    ${t}
+                </div>
+            `).join('');
+        }
+
+        async function confirmBooking() {
+            if(!state.user) { showNotification('Faça login primeiro'); return; }
+            if(!state.booking.time) { showNotification('Escolha um horário'); return; }
+            
+            showLoading(true);
+            try {
+                await db.collection('agendamentos').add({
+                    uid: state.user.uid,
+                    ...state.booking,
+                    createdAt: new Date()
+                });
+                showNotification('Agendado com sucesso!');
+                showPage('meus-agendamentos');
+                changeStep(1); // Reset
+            } catch(e) { console.error(e); }
+            showLoading(false);
+        }
+
+        async function loadAppointments() {
+            const snapshot = await db.collection('agendamentos')
+                .where('uid', '==', state.user.uid).get();
+            
+            const list = document.getElementById('upcoming-list');
+            if(snapshot.empty) { list.innerHTML = '<p>Sem agendamentos.</p>'; return; }
+
+            list.innerHTML = snapshot.docs.map(doc => {
+                const d = doc.data();
+                return `
+                <div class="card glass-effect" style="margin-bottom: 1rem; display: flex; justify-content: space-between;">
+                    <div>
+                        <h4>${d.service.nome}</h4>
+                        <p>${d.date} às ${d.time}</p>
+                    </div>
+                    <div class="highlight">R$ ${d.service.preco}</div>
+                </div>`;
+            }).join('');
+        }
+
+        // 6. ADMINISTRAÇÃO & SUPER ADMIN (PABLO)
+        function initAdminPanel() {
+            document.querySelectorAll('.admin-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
+                    document.getElementById(btn.dataset.tab).classList.remove('hidden');
+                });
+            });
+
+            // Lógica Exclusiva do Super Admin
+            if(state.isSuperAdmin) {
+                const configContainer = document.getElementById('super-admin-area-container');
+                configContainer.innerHTML = `
+                    <div class="card glass-effect" style="border: 1px solid var(--accent);">
+                        <h3 style="color: var(--accent); margin-bottom: 1rem;"><i class="fas fa-crown"></i> Área do Chefe</h3>
+                        <p style="margin-bottom: 10px;">Adicionar novo Administrador:</p>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="email" id="new-admin-email" placeholder="E-mail do usuário" style="background: rgba(0,0,0,0.5);">
+                            <button class="btn-primary" onclick="promoteAdmin()">Promover</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function promoteAdmin() {
+            const email = document.getElementById('new-admin-email').value;
+            if(!email) return showNotification('Digite o e-mail');
+            
+            showLoading(true);
+            try {
+                const snapshot = await db.collection('usuarios').where('email', '==', email).get();
+                if(snapshot.empty) throw new Error('Usuário não encontrado. Ele precisa criar conta primeiro.');
+                
+                const userDoc = snapshot.docs[0];
+                await db.collection('usuarios').doc(userDoc.id).update({ admin: true });
+                
+                showNotification(`Sucesso! ${email} agora é Admin.`);
+                document.getElementById('new-admin-email').value = '';
+            } catch(e) {
+                showNotification(e.message);
+            }
+            showLoading(false);
+        }
+
+        // UTILITÁRIOS
+        function showNotification(msg) {
+            const n = document.getElementById('notification');
+            document.getElementById('notif-msg').textContent = msg;
+            n.classList.remove('hidden');
+            setTimeout(() => n.classList.add('hidden'), 3000);
+        }
+        function showLoading(show) {
+            const l = document.getElementById('loading-overlay');
+            if(show) l.classList.remove('hidden'); else l.classList.add('hidden');
+        }
+
     </script>
 </body>
 </html>
