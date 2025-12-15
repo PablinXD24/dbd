@@ -3,372 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precision Barbers - Ultimate</title>
+    <title>Precision Admin Pro</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
         /* =========================================
-           1. VARIÁVEIS DE TEMA (DARK/LIGHT)
+           1. CORE STYLES (CLEAN WHITE)
            ========================================= */
         :root {
-            /* Light Theme (Padrão) */
-            --bg-body: #F2F4F7;
-            --text-main: #1a1a1a;
-            --text-secondary: #666666;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.9);
-            --card-bg: #ffffff;
+            --bg-body: #F9FAFB;
+            --text-main: #111827;
+            --text-secondary: #6B7280;
             --accent: #FF6B00;
-            --accent-glow: rgba(255, 107, 0, 0.2);
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --orb-opacity: 0.6;
+            --accent-hover: #e65100;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            
+            /* Glass UI */
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(229, 231, 235, 0.8);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
         }
 
-        [data-theme="dark"] {
-            /* Dark Theme */
-            --bg-body: #0a0a0a;
-            --text-main: #ffffff;
-            --text-secondary: #a0a0a0;
-            --glass-bg: rgba(20, 20, 20, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --card-bg: rgba(30, 30, 30, 0.6);
-            --accent: #FF8533;
-            --accent-glow: rgba(255, 133, 51, 0.3);
-            --shadow-color: rgba(0, 0, 0, 0.5);
-            --orb-opacity: 0.3;
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body { font-family: var(--font-main); background-color: var(--bg-body); color: var(--text-main); overflow-x: hidden; }
+
+        /* Fundo Sutil */
+        .bg-pattern {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 20px 20px; opacity: 0.5;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+        /* Container & Layout */
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+        .page { display: none; padding-top: 100px; padding-bottom: 80px; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            min-height: 100vh;
-            overflow-x: hidden;
+        /* Componentes UI */
+        .card {
+            background: white; border-radius: 16px; border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm); padding: 1.5rem; transition: 0.3s;
         }
-
-        /* =========================================
-           2. FUNDO LIQUID ANIMADO
-           ========================================= */
-        .liquid-wrapper {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; overflow: hidden; pointer-events: none;
-        }
-        .liquid-orb {
-            position: absolute; border-radius: 50%; filter: blur(80px);
-            opacity: var(--orb-opacity); animation: float 15s infinite ease-in-out alternate;
-        }
-        .orb-1 { width: 60vw; height: 60vw; background: radial-gradient(circle, var(--accent), transparent 70%); top: -20%; left: -10%; }
-        .orb-2 { width: 50vw; height: 50vw; background: radial-gradient(circle, #3b82f6, transparent 70%); bottom: -10%; right: -10%; animation-delay: -5s; } /* Azul para contraste */
+        .card:hover { box-shadow: var(--shadow-lg); border-color: var(--accent); }
         
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, 40px) scale(1.05); }
-        }
-
-        /* =========================================
-           3. UI COMPONENTS (GLASS & SKELETON)
-           ========================================= */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        
-        .glass-effect {
-            background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border); border-radius: 24px;
-            box-shadow: 0 10px 30px var(--shadow-color);
-        }
-
-        /* Skeleton Loading Animation */
-        .skeleton {
-            background: linear-gradient(90deg, var(--glass-bg) 25%, var(--shadow-color) 50%, var(--glass-bg) 75%);
-            background-size: 200% 100%; animation: shimmer 1.5s infinite;
-            border-radius: 8px; color: transparent !important; pointer-events: none;
-        }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* Botões com Micro-interações */
         .btn-primary {
-            background: var(--accent); color: #fff; border: none; padding: 12px 28px;
-            border-radius: 30px; font-weight: 600; cursor: pointer;
-            box-shadow: 0 4px 15px var(--accent-glow); position: relative; overflow: hidden;
+            background: var(--accent); color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
             display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-primary:active { transform: scale(0.95); }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        
         .btn-secondary {
-            background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--text-main);
-            padding: 12px 28px; border-radius: 30px; cursor: pointer; font-weight: 500;
+            background: white; border: 1px solid #d1d5db; color: var(--text-main);
+            padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: 0.2s;
         }
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-secondary.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* Theme Toggle */
-        .theme-toggle {
-            position: fixed; bottom: 20px; left: 20px; z-index: 1000;
-            width: 50px; height: 50px; border-radius: 50%;
-            background: var(--card-bg); border: 1px solid var(--glass-border);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 5px 15px var(--shadow-color);
-            font-size: 1.2rem; color: var(--text-main);
+        .btn-icon {
+            width: 32px; height: 32px; border-radius: 6px; border: 1px solid transparent;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
         }
+        .btn-icon:hover { background: #f3f4f6; }
+        .btn-danger { color: var(--danger); }
+        .btn-danger:hover { background: #fee2e2; }
+        .btn-success { color: var(--success); }
+        .btn-success:hover { background: #d1fae5; }
 
-        /* Cards */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-        .card {
-            background: var(--card-bg); padding: 1.5rem; border-radius: 20px;
-            border: 1px solid var(--glass-border); transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer; position: relative;
+        input, select {
+            width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;
+            font-family: var(--font-main); transition: 0.2s;
         }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px var(--shadow-color); border-color: var(--accent); }
-        .card.selected { border: 2px solid var(--accent); background: var(--accent-glow); }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1); }
 
-        /* Typography & Layout */
-        .page { display: none; padding-top: 100px; padding-bottom: 50px; animation: fadeUp 0.5s ease; }
-        .page.active { display: block; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .hero-title { font-family: 'Space Grotesk', sans-serif; font-size: 3.5rem; line-height: 1.1; margin-bottom: 1rem; }
-        .text-accent { color: var(--accent); }
-        
         /* Navbar */
         .navbar {
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 999;
-            background: var(--glass-bg); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border); padding: 1rem 0;
+            position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass-border);
+            z-index: 1000; padding: 1rem 0;
         }
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--text-main); text-decoration: none; }
         .nav-links { display: flex; gap: 2rem; }
-        .nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 500; }
-        .nav-link.active { color: var(--accent); position: relative; }
-        .nav-link.active::after { content:''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background: var(--accent); }
+        .nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 500; font-size: 0.95rem; transition: 0.2s; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); }
 
-        /* Loyalty Card */
-        .loyalty-card {
-            background: linear-gradient(135deg, #111, #333); color: #fff;
-            padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem;
-            position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        /* Admin Specific Styles */
+        .admin-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #e5e7eb; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--text-main); margin-top: 0.5rem; }
+        
+        .admin-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .admin-table th { background: #f9fafb; text-align: left; padding: 1rem; font-size: 0.85rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
+        .admin-table td { padding: 1rem; border-top: 1px solid #f3f4f6; font-size: 0.95rem; }
+        .admin-table tr:hover { background: #f9fafb; }
+
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .status-pendente { background: #FEF3C7; color: #D97706; }
+        .status-confirmado { background: #D1FAE5; color: #059669; }
+        .status-concluido { background: #DBEAFE; color: #2563EB; }
+        .status-cancelado { background: #FEE2E2; color: #DC2626; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 2000;
+            display: none; align-items: center; justify-content: center;
         }
-        .loyalty-card::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent); transform: rotate(45deg);
-        }
-        .stamp-grid { display: flex; gap: 10px; margin-top: 1rem; justify-content: space-between; }
-        .stamp {
-            width: 30px; height: 30px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.3);
-            display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
-        }
-        .stamp.filled { background: var(--accent); border: none; color: #fff; box-shadow: 0 0 10px var(--accent); }
+        .modal-box { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: var(--shadow-lg); }
 
         /* Mobile */
         .menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; color: var(--text-main); }
         @media (max-width: 768px) {
-            .nav-links { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: var(--bg-body); flex-direction: column; padding: 2rem; border-bottom: 1px solid var(--glass-border); }
-            .nav-links.open { display: flex; }
+            .nav-links { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; flex-direction: column; padding: 1.5rem; border-bottom: 1px solid #e5e7eb; }
+            .nav-links.active { display: flex; }
             .menu-toggle { display: block; }
-            .hero-title { font-size: 2.5rem; }
+            .admin-table { display: block; overflow-x: auto; }
         }
-
-        /* Utils */
-        .hidden { display: none !important; }
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 2000;
-            display: none; align-items: center; justify-content: center;
-        }
-        .modal-box { width: 90%; max-width: 400px; background: var(--card-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border); }
-        input { width: 100%; padding: 12px; margin-bottom: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); background: var(--bg-body); color: var(--text-main); }
     </style>
 </head>
 <body>
 
-    <div class="liquid-wrapper">
-        <div class="liquid-orb orb-1"></div>
-        <div class="liquid-orb orb-2"></div>
-    </div>
-
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
-    </button>
+    <div class="bg-pattern"></div>
 
     <nav class="navbar">
         <div class="container nav-content">
-            <div style="font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.2rem;">
-                PRECISION <span class="text-accent">.</span>
-            </div>
+            <a href="#" class="logo" onclick="navTo('home')">
+                <i class="fas fa-cut" style="color:var(--accent)"></i> PRECISION
+            </a>
             
             <div class="nav-links" id="nav-links">
-                <a href="#" class="nav-link active" onclick="navTo('home')">Home</a>
+                <a href="#" class="nav-link active" onclick="navTo('home')">Início</a>
                 <a href="#" class="nav-link" onclick="navTo('agendar')">Agendar</a>
-                <a href="#" class="nav-link" onclick="navTo('meus-agendamentos')">Perfil</a>
-                <a href="#" class="nav-link hidden" id="admin-link" onclick="navTo('admin')" style="color:var(--accent)">Admin</a>
+                <a href="#" class="nav-link" onclick="navTo('perfil')">Meus Cortes</a>
+                <a href="#" class="nav-link hidden" id="admin-link" onclick="navTo('admin')" style="color:var(--accent); font-weight:600;">
+                    <i class="fas fa-lock"></i> Gestão
+                </a>
             </div>
 
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button class="btn-primary" id="btn-login-nav" onclick="openLoginModal()">Entrar</button>
-                <div id="user-avatar" class="hidden" style="width:35px; height:35px; background:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; cursor:pointer;" onclick="auth.signOut()">U</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="btn-primary" id="btn-login" onclick="openModal('auth')">Entrar</button>
+                <div id="user-info" class="hidden" style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-weight:600; font-size:0.9rem;" id="user-name-display">User</span>
+                    <button class="btn-icon" onclick="auth.signOut()"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
                 <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
             </div>
         </div>
     </nav>
 
-    <section id="home-page" class="page active">
-        <div class="container" style="text-align: center; margin-top: 2rem;">
-            <span style="background: var(--accent-glow); color: var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">NOVO SISTEMA 2.0</span>
-            <h1 class="hero-title" style="margin-top: 1rem;">O Corte Perfeito,<br>Sem Complicação.</h1>
-            <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 2rem;">
-                Agende seu horário em segundos. Sem login obrigatório para começar. Fidelidade digital inclusa.
-            </p>
-            <button class="btn-primary" style="font-size: 1.1rem; padding: 15px 40px;" onclick="navTo('agendar')">
-                Agendar Agora <i class="fas fa-arrow-right"></i>
-            </button>
+    <main id="content">
+        <section id="home-page" class="page active">
+            <div class="container" style="text-align:center; max-width:800px; margin-top:2rem;">
+                <h1 style="font-family:var(--font-display); font-size:3.5rem; line-height:1.1; margin-bottom:1.5rem;">
+                    Excelência em <span style="color:var(--accent)">Cada Detalhe</span>.
+                </h1>
+                <p style="color:var(--text-secondary); font-size:1.1rem; margin-bottom:2.5rem;">
+                    O sistema de agendamento mais rápido e prático. Controle total do seu estilo sem complicações.
+                </p>
+                <button class="btn-primary" style="padding:15px 40px; font-size:1.1rem;" onclick="navTo('agendar')">
+                    Agendar Horário <i class="fas fa-arrow-right"></i>
+                </button>
 
-            <div class="grid-container" id="home-services" style="margin-top: 4rem; text-align: left;">
-                <div class="card skeleton" style="height: 150px;"></div>
-                <div class="card skeleton" style="height: 150px;"></div>
-                <div class="card skeleton" style="height: 150px;"></div>
-            </div>
-        </div>
-    </section>
-
-    <section id="agendar-page" class="page">
-        <div class="container">
-            <h2 style="font-family:'Space Grotesk'; margin-bottom: 2rem;">Agendamento Rápido</h2>
-            
-            <div style="display: flex; gap: 5px; margin-bottom: 2rem;">
-                <div class="progress-bar" id="pb-1" style="flex:1; height:4px; background:var(--accent); border-radius:2px;"></div>
-                <div class="progress-bar" id="pb-2" style="flex:1; height:4px; background:var(--glass-border); border-radius:2px;"></div>
-                <div class="progress-bar" id="pb-3" style="flex:1; height:4px; background:var(--glass-border); border-radius:2px;"></div>
-            </div>
-
-            <div id="step-1">
-                <h3 style="margin-bottom:1rem;">1. Escolha o Serviço</h3>
-                <div class="grid-container" id="booking-services-list"></div>
-            </div>
-
-            <div id="step-2" class="hidden">
-                <h3 style="margin-bottom:1rem;">2. Escolha o Profissional</h3>
-                <div class="grid-container" id="booking-barbers-list"></div>
-                <button class="btn-secondary" style="margin-top:1rem;" onclick="setStep(1)">Voltar</button>
-            </div>
-
-            <div id="step-3" class="hidden">
-                <h3 style="margin-bottom:1rem;">3. Data e Hora</h3>
-                <div class="glass-effect" style="padding: 1.5rem;">
-                    <input type="date" id="date-picker" onchange="loadTimeSlots()" style="font-size: 1rem;">
-                    <div id="slots-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 1rem;">
+                <div style="margin-top:4rem; text-align:left;">
+                    <h3 style="margin-bottom:1rem;">Nossos Serviços</h3>
+                    <div id="public-services" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:1.5rem;">
                         </div>
                 </div>
-                <div style="margin-top: 1.5rem; display: flex; justify-content: space-between;">
-                    <button class="btn-secondary" onclick="setStep(2)">Voltar</button>
-                    <button class="btn-primary" onclick="tryConfirmBooking()">Confirmar Agendamento</button>
-                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="meus-agendamentos-page" class="page">
-        <div class="container">
-            <h2 style="font-family:'Space Grotesk'; margin-bottom: 2rem;">Meu Perfil</h2>
-            
-            <div class="loyalty-card">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h3 style="margin:0;">Precision Club</h3>
-                    <span style="font-size:0.8rem; opacity:0.8;">10º CORTE GRÁTIS</span>
-                </div>
-                <div class="stamp-grid" id="loyalty-stamps">
+        <section id="agendar-page" class="page">
+            <div class="container" style="max-width:800px;">
+                <div class="card">
+                    <h2 style="margin-bottom:1.5rem;">Novo Agendamento</h2>
+                    
+                    <div id="step-1">
+                        <label style="display:block; margin-bottom:10px; font-weight:600;">1. Qual serviço?</label>
+                        <select id="booking-service" onchange="stepTo(2)">
+                            <option value="">Selecione...</option>
+                        </select>
                     </div>
-                <p style="margin-top:1rem; font-size:0.9rem; opacity:0.7;">Você tem <span id="stamp-count">0</span> selos.</p>
-            </div>
 
-            <h3 style="margin-bottom: 1rem;">Próximos Cortes</h3>
-            <div id="user-appointments-list"></div>
-        </div>
-    </section>
-
-    <section id="admin-page" class="page">
-        <div class="container">
-            <div style="background: var(--accent); color: white; padding: 2rem; border-radius: 20px; margin-bottom: 2rem;">
-                <h2 style="margin:0;">Painel Administrativo</h2>
-                <p style="opacity:0.9;">Gestão completa: Financeiro, Equipe e Serviços.</p>
-            </div>
-
-            <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px; margin-bottom:1rem;">
-                <button class="btn-secondary active" onclick="openAdminTab('dash')">Dashboard</button>
-                <button class="btn-secondary" onclick="openAdminTab('manage')">Gerenciar Loja</button>
-                <button class="btn-secondary" onclick="openAdminTab('admins')">Super Admin</button>
-            </div>
-
-            <div id="adm-dash" class="admin-tab-content">
-                <div class="grid-container" style="margin-bottom:2rem;">
-                    <div class="card">
-                        <small style="color:var(--text-secondary)">FATURAMENTO (MÊS)</small>
-                        <h2 style="color:var(--accent)">R$ <span id="dash-revenue">0,00</span></h2>
+                    <div id="step-2" class="hidden" style="margin-top:1.5rem;">
+                        <label style="display:block; margin-bottom:10px; font-weight:600;">2. Qual profissional?</label>
+                        <select id="booking-barber" onchange="stepTo(3)">
+                            <option value="">Qualquer profissional</option>
+                        </select>
                     </div>
-                    <div class="card">
-                        <small style="color:var(--text-secondary)">AGENDAMENTOS HOJE</small>
-                        <h2><span id="dash-today">0</span></h2>
+
+                    <div id="step-3" class="hidden" style="margin-top:1.5rem;">
+                        <label style="display:block; margin-bottom:10px; font-weight:600;">3. Data e Hora</label>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                            <input type="date" id="booking-date" onchange="loadSlots()">
+                            <select id="booking-time">
+                                <option>Escolha a data primeiro</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" style="width:100%; margin-top:2rem;" onclick="confirmBooking()">Confirmar Agendamento</button>
                     </div>
                 </div>
-                
-                <div class="glass-effect" style="padding:1rem;">
-                    <canvas id="revenueChart" style="max-height: 300px;"></canvas>
-                </div>
             </div>
+        </section>
 
-            <div id="adm-manage" class="admin-tab-content hidden">
-                <div class="grid-container">
-                    <div class="card">
-                        <h3>Serviços</h3>
-                        <div id="adm-services-list" style="margin: 1rem 0;"></div>
-                        <div style="display:flex; gap:5px;">
-                            <input id="new-serv-name" placeholder="Nome">
-                            <input id="new-serv-price" placeholder="R$" style="width:80px">
-                            <button class="btn-primary" onclick="addService()">+</button>
+        <section id="perfil-page" class="page">
+            <div class="container" style="max-width:800px;">
+                <div class="card" style="margin-bottom:2rem; background:linear-gradient(135deg, #1f2937, #111827); color:white;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <h3>Cartão Fidelidade</h3>
+                        <i class="fas fa-crown" style="color:var(--accent)"></i>
+                    </div>
+                    <div id="loyalty-slots" style="display:flex; gap:10px; margin-top:1.5rem; justify-content:center;">
+                        </div>
+                    <p style="text-align:center; margin-top:1rem; font-size:0.9rem; opacity:0.7;">Complete 10 cortes e ganhe 1 grátis.</p>
+                </div>
+
+                <h3>Meus Agendamentos</h3>
+                <div id="my-appointments" style="margin-top:1rem; display:grid; gap:1rem;"></div>
+            </div>
+        </section>
+
+        <section id="admin-page" class="page">
+            <div class="container">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+                    <div>
+                        <h2 style="font-family:var(--font-display);">Painel de Controle</h2>
+                        <p style="color:var(--text-secondary);">Bem-vindo, Chefe. Aqui você manda.</p>
+                    </div>
+                    <div style="background:white; padding:5px; border-radius:8px; border:1px solid #e5e7eb;">
+                        <span style="font-size:0.8rem; font-weight:600; padding:0 10px; color:var(--success);">● Sistema Online</span>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:10px; margin-bottom:2rem; overflow-x:auto; padding-bottom:5px;">
+                    <button class="btn-secondary active" onclick="switchAdmTab('dash')"><i class="fas fa-chart-pie"></i> Visão Geral</button>
+                    <button class="btn-secondary" onclick="switchAdmTab('agenda')"><i class="fas fa-calendar-check"></i> Agenda Total</button>
+                    <button class="btn-secondary" onclick="switchAdmTab('servicos')"><i class="fas fa-cut"></i> Serviços</button>
+                    <button class="btn-secondary" onclick="switchAdmTab('equipe')"><i class="fas fa-users"></i> Equipe</button>
+                    <button class="btn-secondary" onclick="switchAdmTab('loja')"><i class="fas fa-store"></i> Config Loja</button>
+                </div>
+
+                <div id="adm-dash" class="adm-content">
+                    <div class="admin-stat-grid">
+                        <div class="stat-card">
+                            <span style="color:var(--text-secondary); font-size:0.9rem;">FATURAMENTO (HOJE)</span>
+                            <div class="stat-value" style="color:var(--accent);">R$ <span id="stat-revenue">0,00</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <span style="color:var(--text-secondary); font-size:0.9rem;">CORTES REALIZADOS</span>
+                            <div class="stat-value" id="stat-count">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <span style="color:var(--text-secondary); font-size:0.9rem;">TICKET MÉDIO</span>
+                            <div class="stat-value">R$ <span id="stat-ticket">0,00</span></div>
                         </div>
                     </div>
                     <div class="card">
-                        <h3>Profissionais</h3>
-                        <div id="adm-barbers-list" style="margin: 1rem 0;"></div>
-                        <div style="display:flex; gap:5px;">
-                            <input id="new-barb-name" placeholder="Nome">
-                            <button class="btn-primary" onclick="addBarber()">+</button>
+                        <h3 style="margin-bottom:1rem;">Fluxo Financeiro</h3>
+                        <canvas id="revenueChart" style="max-height:300px;"></canvas>
+                    </div>
+                </div>
+
+                <div id="adm-agenda" class="adm-content hidden">
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+                            <h3>Todos os Agendamentos</h3>
+                            <button class="btn-icon" onclick="loadAdminAgenda()"><i class="fas fa-sync"></i></button>
+                        </div>
+                        <div style="overflow-x:auto;">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th>Serviço</th>
+                                        <th>Profissional</th>
+                                        <th>Data/Hora</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adm-agenda-list">
+                                    </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div id="adm-admins" class="admin-tab-content hidden">
-                <div class="card glass-effect" style="border:1px solid var(--accent)">
-                    <h3 style="color:var(--accent)">Promover Administrador</h3>
-                    <p style="color:var(--text-secondary)">Adicione novos gerentes digitando o e-mail.</p>
-                    <div style="display:flex; gap:10px; margin-top:1rem;">
-                        <input id="new-admin-mail" placeholder="E-mail do usuário">
-                        <button class="btn-primary" onclick="promoteAdmin()">Promover</button>
+                <div id="adm-servicos" class="adm-content hidden">
+                    <div style="display:grid; grid-template-columns: 1fr 2fr; gap:2rem;">
+                        <div class="card" style="height:fit-content;">
+                            <h3 style="margin-bottom:1rem;">Novo Serviço</h3>
+                            <input type="text" id="new-service-name" placeholder="Nome (ex: Corte Navalhado)" style="margin-bottom:10px;">
+                            <input type="number" id="new-service-price" placeholder="Preço (R$)" style="margin-bottom:10px;">
+                            <button class="btn-primary" style="width:100%;" onclick="addService()">
+                                <i class="fas fa-plus"></i> Adicionar ao Menu
+                            </button>
+                        </div>
+                        <div class="card">
+                            <h3 style="margin-bottom:1rem;">Serviços Ativos</h3>
+                            <table class="admin-table">
+                                <thead><tr><th>Nome</th><th>Preço</th><th style="text-align:right;">Ação</th></tr></thead>
+                                <tbody id="adm-services-list"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+
+                <div id="adm-equipe" class="adm-content hidden">
+                    <div style="display:grid; grid-template-columns: 1fr 2fr; gap:2rem;">
+                        <div class="card" style="height:fit-content;">
+                            <h3 style="margin-bottom:1rem;">Novo Profissional</h3>
+                            <input type="text" id="new-barber-name" placeholder="Nome Completo" style="margin-bottom:10px;">
+                            <button class="btn-primary" style="width:100%;" onclick="addBarber()">
+                                <i class="fas fa-user-plus"></i> Contratar
+                            </button>
+                        </div>
+                        <div class="card">
+                            <h3 style="margin-bottom:1rem;">Time Atual</h3>
+                            <table class="admin-table">
+                                <thead><tr><th>Nome</th><th style="text-align:right;">Ação</th></tr></thead>
+                                <tbody id="adm-barbers-list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="adm-loja" class="adm-content hidden">
+                    <div class="card">
+                        <h3>Configurações Gerais</h3>
+                        <p style="color:var(--text-secondary); margin-bottom:1rem;">Defina quem tem acesso administrativo.</p>
+                        
+                        <div style="background:#f3f4f6; padding:1.5rem; border-radius:12px; margin-bottom:1rem;">
+                            <h4>Adicionar Novo Administrador</h4>
+                            <div style="display:flex; gap:10px; margin-top:10px;">
+                                <input type="email" id="new-admin-email" placeholder="E-mail do usuário cadastrado">
+                                <button class="btn-primary" onclick="makeAdmin()">Promover</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+        </section>
+    </main>
 
-        </div>
-    </section>
-
-    <div id="auth-modal" class="modal-overlay">
-        <div class="modal-box glass-effect">
-            <h2 style="margin-bottom:1rem;">Identifique-se</h2>
-            <p style="margin-bottom:1.5rem; color:var(--text-secondary);">Para confirmar seu agendamento, precisamos saber quem é você.</p>
+    <div id="modal-auth" class="modal-overlay">
+        <div class="modal-box">
+            <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+                <h3>Acesso</h3>
+                <button class="btn-icon" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
             
-            <form id="login-form">
-                <input type="email" id="login-email" placeholder="E-mail" required>
-                <input type="password" id="login-pass" placeholder="Senha" required>
-                <button type="submit" class="btn-primary" style="width:100%">Entrar & Confirmar</button>
+            <form id="form-login">
+                <input type="email" id="login-email" placeholder="E-mail" required style="margin-bottom:10px;">
+                <input type="password" id="login-pass" placeholder="Senha" required style="margin-bottom:20px;">
+                <button type="submit" class="btn-primary" style="width:100%;">Entrar</button>
+                <p style="text-align:center; margin-top:15px; font-size:0.9rem;">
+                    <a href="#" onclick="toggleAuth('register')" style="color:var(--accent);">Criar conta</a>
+                </p>
             </form>
-            
-            <div style="text-align:center; margin-top:1rem; font-size:0.9rem;">
-                <span style="cursor:pointer; color:var(--accent);" onclick="toggleAuthMode()">Criar conta nova</span>
-            </div>
+
+            <form id="form-register" class="hidden">
+                <input type="text" id="reg-name" placeholder="Nome" required style="margin-bottom:10px;">
+                <input type="email" id="reg-email" placeholder="E-mail" required style="margin-bottom:10px;">
+                <input type="password" id="reg-pass" placeholder="Senha" required style="margin-bottom:20px;">
+                <button type="submit" class="btn-primary" style="width:100%;">Cadastrar</button>
+                <p style="text-align:center; margin-top:15px; font-size:0.9rem;">
+                    <a href="#" onclick="toggleAuth('login')" style="color:var(--accent);">Já tenho conta</a>
+                </p>
+            </form>
         </div>
     </div>
 
-    <div id="toast" style="position:fixed; bottom:20px; right:20px; background:var(--accent); color:white; padding:12px 24px; border-radius:12px; transform:translateY(100px); transition:0.3s; z-index:5000; font-weight:600;">
-        Mensagem aqui
+    <div id="toast" style="position:fixed; bottom:20px; right:20px; background:white; padding:15px 25px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.1); border-left:5px solid var(--accent); transform:translateY(150%); transition:0.3s; z-index:9999; font-weight:600;">
+        Notificação
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -376,7 +393,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // --- 1. CONFIGURAÇÃO ---
+        /* =========================================
+           JAVASCRIPT LOGIC
+           ========================================= */
+        
+        // 1. CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyCHR2POfEPFGG-AbajaEsnBk32bvrru5uM",
             authDomain: "dbyd-5201e.firebaseapp.com",
@@ -388,405 +409,381 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        
         const SUPER_ADMIN = "pablo11ssousa2@gmail.com";
-        
-        const state = {
+
+        let state = {
             user: null,
             isAdmin: false,
-            booking: { service: null, barber: null, date: null, time: null },
-            data: { services: [], barbers: [] }
+            services: [],
+            barbers: [],
+            booking: {}
         };
 
-        // --- 2. INICIALIZAÇÃO ---
+        // 2. INIT
         document.addEventListener('DOMContentLoaded', () => {
             initAuth();
-            loadData();
+            loadPublicData();
             
-            // Set Datepicker min to today
-            document.getElementById('date-picker').min = new Date().toISOString().split('T')[0];
+            // Set datepicker min to today
+            document.getElementById('booking-date').min = new Date().toISOString().split('T')[0];
         });
 
-        // --- 3. TEMA DARK/LIGHT ---
-        function toggleTheme() {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', next);
-            
-            const btn = document.querySelector('.theme-toggle i');
-            btn.className = next === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-        }
-
-        // --- 4. NAVEGAÇÃO & UI ---
-        function navTo(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId + '-page').classList.add('active');
-            
-            // Atualiza menu
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            // Fecha menu mobile
-            document.getElementById('nav-links').classList.remove('open');
-            
-            if(pageId === 'admin') initAdminDashboard();
-        }
-
-        function toggleMenu() { document.getElementById('nav-links').classList.toggle('open'); }
-        
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.style.transform = "translateY(0)";
-            setTimeout(() => t.style.transform = "translateY(100px)", 3000);
-        }
-
-        // --- 5. AUTENTICAÇÃO ---
+        // 3. AUTH LOGIC
         function initAuth() {
             auth.onAuthStateChanged(async (user) => {
                 state.user = user;
-                if (user) {
-                    document.getElementById('btn-login-nav').classList.add('hidden');
-                    document.getElementById('user-avatar').classList.remove('hidden');
-                    document.getElementById('user-avatar').innerText = user.email[0].toUpperCase();
-                    
-                    // Admin Check
-                    if (user.email === SUPER_ADMIN) {
+                if(user) {
+                    document.getElementById('btn-login').classList.add('hidden');
+                    document.getElementById('user-info').classList.remove('hidden');
+                    document.getElementById('user-name-display').innerText = user.email.split('@')[0];
+
+                    // Check Admin
+                    if(user.email === SUPER_ADMIN) {
                         state.isAdmin = true;
-                        // Auto-promote no banco
-                        db.collection('usuarios').doc(user.uid).set({ admin: true, email: user.email }, { merge: true });
-                        document.getElementById('admin-link').classList.remove('hidden');
+                        db.collection('usuarios').doc(user.uid).set({admin:true, email:user.email}, {merge:true});
+                        showAdminAccess();
                     } else {
                         const doc = await db.collection('usuarios').doc(user.uid).get();
                         if(doc.exists && doc.data().admin) {
                             state.isAdmin = true;
-                            document.getElementById('admin-link').classList.remove('hidden');
+                            showAdminAccess();
                         }
                     }
-                    
-                    loadLoyalty(); // Carregar fidelidade
                     loadUserHistory();
-                    
-                    // Se estava no meio do booking
-                    if(document.getElementById('auth-modal').style.display === 'flex') {
-                        document.getElementById('auth-modal').style.display = 'none';
-                        confirmBookingFinal();
-                    }
                 } else {
-                    document.getElementById('btn-login-nav').classList.remove('hidden');
-                    document.getElementById('user-avatar').classList.add('hidden');
+                    document.getElementById('btn-login').classList.remove('hidden');
+                    document.getElementById('user-info').classList.add('hidden');
                     document.getElementById('admin-link').classList.add('hidden');
+                    state.isAdmin = false;
                 }
             });
         }
 
-        function openLoginModal() { document.getElementById('auth-modal').style.display = 'flex'; }
-        
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        function showAdminAccess() {
+            document.getElementById('admin-link').classList.remove('hidden');
+            loadAdminData(); // Start loading admin stuff
+        }
+
+        // Login/Register Forms
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
             try {
-                await auth.signInWithEmailAndPassword(email, pass);
-            } catch(err) {
-                // Se falhar, tenta criar conta (Flow simplificado)
-                try {
-                    await auth.createUserWithEmailAndPassword(email, pass);
-                    showToast('Conta criada e logado!');
-                } catch(err2) { showToast('Erro: Verifique senha ou e-mail'); }
-            }
+                await auth.signInWithEmailAndPassword(
+                    document.getElementById('login-email').value, 
+                    document.getElementById('login-pass').value
+                );
+                closeModal();
+                showToast('Bem-vindo de volta!');
+            } catch(e) { showToast('Erro no login: ' + e.message); }
         });
 
-        // --- 6. DADOS (SERVIÇOS/BARBEIROS) ---
-        function loadData() {
+        document.getElementById('form-register').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const cred = await auth.createUserWithEmailAndPassword(
+                    document.getElementById('reg-email').value,
+                    document.getElementById('reg-pass').value
+                );
+                await db.collection('usuarios').doc(cred.user.uid).set({
+                    nome: document.getElementById('reg-name').value,
+                    email: document.getElementById('reg-email').value,
+                    admin: document.getElementById('reg-email').value === SUPER_ADMIN
+                });
+                closeModal();
+                showToast('Conta criada!');
+            } catch(e) { showToast('Erro: ' + e.message); }
+        });
+
+        // 4. PUBLIC DATA
+        function loadPublicData() {
             db.collection('servicos').onSnapshot(snap => {
-                state.data.services = snap.docs.map(d => ({id:d.id, ...d.data()}));
-                renderServices();
+                state.services = snap.docs.map(d => ({id:d.id, ...d.data()}));
+                renderPublicServices();
+                if(state.isAdmin) renderAdminServicesList(); // Realtime update for admin too
             });
             db.collection('barbeiros').onSnapshot(snap => {
-                state.data.barbers = snap.docs.map(d => ({id:d.id, ...d.data()}));
+                state.barbers = snap.docs.map(d => ({id:d.id, ...d.data()}));
+                renderBookingSelects();
+                if(state.isAdmin) renderAdminBarbersList();
             });
         }
 
-        function renderServices() {
-            // Render na Home (Preview) e no Agendamento
-            const html = state.data.services.map(s => `
-                <div class="card" onclick="selectService('${s.id}')" id="srv-${s.id}">
-                    <div style="display:flex; justify-content:space-between;">
-                        <b>${s.nome}</b>
-                        <span style="color:var(--accent)">R$ ${s.preco}</span>
-                    </div>
+        function renderPublicServices() {
+            const container = document.getElementById('public-services');
+            container.innerHTML = state.services.map(s => `
+                <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:600;">${s.nome}</span>
+                    <span style="color:var(--accent); font-weight:700;">R$ ${s.preco}</span>
                 </div>
             `).join('');
             
-            document.getElementById('home-services').innerHTML = html;
-            document.getElementById('booking-services-list').innerHTML = html;
-            document.querySelectorAll('.skeleton').forEach(el => el.classList.remove('skeleton')); // Remove skeleton
+            // Populate Booking Select
+            const select = document.getElementById('booking-service');
+            select.innerHTML = '<option value="">Selecione...</option>' + 
+                state.services.map(s => `<option value="${s.id}">${s.nome} - R$ ${s.preco}</option>`).join('');
         }
 
-        // --- 7. AGENDAMENTO (FLOW INTELIGENTE) ---
-        function selectService(id) {
-            state.booking.service = state.data.services.find(s => s.id === id);
-            // Visual selection
-            document.querySelectorAll('#booking-services-list .card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('srv-'+id)?.classList.add('selected');
-            
-            // Se estiver na Home, vai pra agendar
-            if(document.getElementById('home-page').classList.contains('active')) {
-                navTo('agendar');
-            }
-            
-            setStep(2);
-            renderBarbersForBooking();
+        function renderBookingSelects() {
+            const select = document.getElementById('booking-barber');
+            select.innerHTML = '<option value="">Qualquer profissional</option>' + 
+                state.barbers.map(b => `<option value="${b.id}">${b.nome}</option>`).join('');
         }
 
-        function renderBarbersForBooking() {
-            const html = state.data.barbers.map(b => `
-                <div class="card" onclick="selectBarber('${b.id}')">
-                    <i class="fas fa-user"></i> ${b.nome}
-                </div>
-            `).join('');
-            document.getElementById('booking-barbers-list').innerHTML = html;
-        }
-
-        function selectBarber(id) {
-            state.booking.barber = state.data.barbers.find(b => b.id === id);
-            setStep(3);
-        }
-
-        function setStep(step) {
+        // 5. BOOKING LOGIC
+        function stepTo(step) {
             ['step-1','step-2','step-3'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('step-'+step).classList.remove('hidden');
+        }
+
+        function loadSlots() {
+            // Mock slots logic
+            const slots = ['09:00','10:00','11:00','14:00','15:00','16:00','17:00','18:00'];
+            const select = document.getElementById('booking-time');
+            select.innerHTML = slots.map(t => `<option>${t}</option>`).join('');
+        }
+
+        async function confirmBooking() {
+            if(!state.user) return openModal('auth');
             
-            // Progress Bar UI
-            document.getElementById('pb-1').style.background = step >= 1 ? 'var(--accent)' : 'var(--glass-border)';
-            document.getElementById('pb-2').style.background = step >= 2 ? 'var(--accent)' : 'var(--glass-border)';
-            document.getElementById('pb-3').style.background = step >= 3 ? 'var(--accent)' : 'var(--glass-border)';
-        }
+            const serviceId = document.getElementById('booking-service').value;
+            const barberId = document.getElementById('booking-barber').value;
+            const date = document.getElementById('booking-date').value;
+            const time = document.getElementById('booking-time').value;
 
-        // Gerador de Slots com "Prevenção de Conflito" (Simulada para UI)
-        async function loadTimeSlots() {
-            const date = document.getElementById('date-picker').value;
-            state.booking.date = date;
-            
-            // Buscar agendamentos existentes nesse dia para bloquear
-            const snap = await db.collection('agendamentos').where('date', '==', date).get();
-            const busyTimes = snap.docs.map(d => d.data().time);
+            if(!serviceId || !date) return showToast('Preencha os dados');
 
-            const slots = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
-            
-            const grid = document.getElementById('slots-grid');
-            grid.innerHTML = slots.map(time => {
-                const isBusy = busyTimes.includes(time);
-                return `
-                <div style="
-                    padding:10px; border-radius:8px; text-align:center; font-size:0.9rem; border:1px solid var(--glass-border);
-                    ${isBusy ? 'background:#ccc; opacity:0.5; cursor:not-allowed;' : 'cursor:pointer; background:var(--card-bg);'}
-                " onclick="${!isBusy ? `selectTime(this, '${time}')` : ''}">
-                    ${time}
-                </div>`;
-            }).join('');
-        }
+            const service = state.services.find(s => s.id === serviceId);
+            const barber = state.barbers.find(b => b.id === barberId) || {nome: 'Qualquer'};
 
-        function selectTime(el, time) {
-            state.booking.time = time;
-            // Clear styles
-            Array.from(el.parentNode.children).forEach(c => {
-                if(!c.style.background.includes('ccc')) {
-                    c.style.background = 'var(--card-bg)';
-                    c.style.color = 'var(--text-main)';
-                }
-            });
-            el.style.background = 'var(--accent)';
-            el.style.color = 'white';
-        }
-
-        function tryConfirmBooking() {
-            if (!state.booking.date || !state.booking.time) return showToast('Escolha um horário');
-            if (!state.user) {
-                openLoginModal(); // GUEST CHECKOUT TRIGGER
-            } else {
-                confirmBookingFinal();
-            }
-        }
-
-        async function confirmBookingFinal() {
             try {
-                // Checagem final de conflito
-                const conflict = await db.collection('agendamentos')
-                    .where('date', '==', state.booking.date)
-                    .where('time', '==', state.booking.time)
-                    .where('barberId', '==', state.booking.barber.id) // Opcional: conflito por barbeiro
-                    .get();
-                
-                if(!conflict.empty) return showToast('Ops! Esse horário acabou de ser pego.');
-
                 await db.collection('agendamentos').add({
                     uid: state.user.uid,
-                    userName: state.user.email,
-                    service: state.booking.service.nome,
-                    price: state.booking.service.preco,
-                    barber: state.booking.barber.nome,
-                    barberId: state.booking.barber.id,
-                    date: state.booking.date,
-                    time: state.booking.time,
+                    clientEmail: state.user.email,
+                    serviceName: service.nome,
+                    servicePrice: service.preco,
+                    barberName: barber.nome,
+                    date: date,
+                    time: time,
+                    status: 'pendente', // Status inicial
                     createdAt: new Date()
                 });
-
-                // Atualizar Fidelidade (+1 selo)
-                updateLoyalty(1);
-
-                showToast('Agendamento Confirmado! ✂️');
-                navTo('meus-agendamentos');
-                setStep(1); // Reset
-                
-                // Link WhatsApp Opcional
-                setTimeout(() => {
-                    if(confirm('Deseja receber lembrete no WhatsApp?')) {
-                        const msg = `Olá, agendei um ${state.booking.service.nome} para dia ${state.booking.date} às ${state.booking.time}.`;
-                        window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(msg)}`);
-                    }
-                }, 1000);
-
-            } catch(e) { console.error(e); showToast('Erro no sistema'); }
-        }
-
-        // --- 8. FIDELIDADE & HISTÓRICO ---
-        async function loadLoyalty() {
-            // Lógica simples: contar agendamentos passados
-            const snap = await db.collection('agendamentos').where('uid', '==', state.user.uid).get();
-            const count = snap.size % 10; // Ciclo de 10
-            
-            document.getElementById('stamp-count').innerText = count;
-            let html = '';
-            for(let i=0; i<10; i++) {
-                html += `<div class="stamp ${i < count ? 'filled' : ''}">${i < count ? '<i class="fas fa-check"></i>' : i+1}</div>`;
-            }
-            document.getElementById('loyalty-stamps').innerHTML = html;
-        }
-        
-        function updateLoyalty(amount) {
-            // No futuro, salvar saldo em coleção separada 'loyalty'
-            loadLoyalty(); // Refresh
+                showToast('Agendado com sucesso!');
+                navTo('perfil');
+                stepTo(1); // Reset
+            } catch(e) { console.error(e); showToast('Erro ao agendar'); }
         }
 
         function loadUserHistory() {
-            db.collection('agendamentos')
-                .where('uid', '==', state.user.uid)
-                .orderBy('date', 'desc')
-                .onSnapshot(snap => {
-                    const list = document.getElementById('user-appointments-list');
-                    list.innerHTML = snap.docs.map(d => {
-                        const data = d.data();
-                        return `
-                        <div class="card" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <b>${data.service}</b> com ${data.barber}<br>
-                                <small>${data.date} - ${data.time}</small>
-                            </div>
-                            <div style="background:#e6fffa; color:#006644; padding:5px 10px; border-radius:10px; font-size:0.8rem; font-weight:600;">
-                                Confirmado
-                            </div>
-                        </div>`;
-                    }).join('') || '<p>Nenhum corte registrado.</p>';
-                });
+            db.collection('agendamentos').where('uid','==',state.user.uid)
+            .orderBy('createdAt', 'desc').onSnapshot(snap => {
+                const html = snap.docs.map(d => {
+                    const data = d.data();
+                    const badgeClass = `status-${data.status || 'pendente'}`;
+                    return `
+                    <div class="card" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <strong>${data.serviceName}</strong><br>
+                            <small>${data.date} às ${data.time}</small>
+                        </div>
+                        <span class="status-badge ${badgeClass}">${data.status}</span>
+                    </div>`;
+                }).join('');
+                document.getElementById('my-appointments').innerHTML = html || '<p>Sem histórico.</p>';
+                
+                // Loyalty Logic (Simple)
+                const count = snap.size % 10;
+                let circles = '';
+                for(let i=0; i<10; i++) {
+                    circles += `<div style="width:30px; height:30px; border-radius:50%; border:2px solid #333; display:flex; align-items:center; justify-content:center; background:${i<count?'var(--accent)':'transparent'}">${i<count?'✓':i+1}</div>`;
+                }
+                document.getElementById('loyalty-slots').innerHTML = circles;
+            });
         }
 
-        // --- 9. ADMIN DASHBOARD PRO ---
-        function openAdminTab(tabId) {
-            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+        // =========================================
+        // 6. ADMIN LOGIC (THE POWERHOUSE)
+        // =========================================
+        
+        function loadAdminData() {
+            loadAdminAgenda();
+            renderRevenueChart();
+        }
+
+        function switchAdmTab(tabId) {
+            document.querySelectorAll('.adm-content').forEach(el => el.classList.add('hidden'));
             document.getElementById('adm-'+tabId).classList.remove('hidden');
             
-            // Botões ativos visual
-            const btns = document.querySelectorAll('#admin-page .btn-secondary');
-            btns.forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.btn-secondary').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
         }
 
-        async function initAdminDashboard() {
-            // Carregar métricas reais
-            const snap = await db.collection('agendamentos').get();
-            let total = 0;
-            let todayCount = 0;
-            const todayStr = new Date().toISOString().split('T')[0];
-            
-            snap.forEach(d => {
-                const data = d.data();
-                total += parseFloat(data.price || 0);
-                if(data.date === todayStr) todayCount++;
+        // A. GESTÃO DE SERVIÇOS (ADD/DELETE)
+        async function addService() {
+            const nome = document.getElementById('new-service-name').value;
+            const preco = document.getElementById('new-service-price').value;
+            if(nome && preco) {
+                await db.collection('servicos').add({ nome, preco: parseFloat(preco) });
+                document.getElementById('new-service-name').value = '';
+                document.getElementById('new-service-price').value = '';
+                showToast('Serviço Adicionado');
+            }
+        }
+
+        async function removeService(id) {
+            if(confirm('Tem certeza que deseja excluir este serviço?')) {
+                await db.collection('servicos').doc(id).delete();
+                showToast('Serviço Removido');
+            }
+        }
+
+        function renderAdminServicesList() {
+            const tbody = document.getElementById('adm-services-list');
+            tbody.innerHTML = state.services.map(s => `
+                <tr>
+                    <td>${s.nome}</td>
+                    <td>R$ ${s.preco}</td>
+                    <td style="text-align:right;">
+                        <button class="btn-icon btn-danger" onclick="removeService('${s.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // B. GESTÃO DE EQUIPE (ADD/DELETE)
+        async function addBarber() {
+            const nome = document.getElementById('new-barber-name').value;
+            if(nome) {
+                await db.collection('barbeiros').add({ nome });
+                document.getElementById('new-barber-name').value = '';
+                showToast('Profissional Contratado');
+            }
+        }
+
+        async function removeBarber(id) {
+            if(confirm('Remover este profissional da equipe?')) {
+                await db.collection('barbeiros').doc(id).delete();
+                showToast('Profissional Removido');
+            }
+        }
+
+        function renderAdminBarbersList() {
+            const tbody = document.getElementById('adm-barbers-list');
+            tbody.innerHTML = state.barbers.map(b => `
+                <tr>
+                    <td><i class="fas fa-user-tie"></i> ${b.nome}</td>
+                    <td style="text-align:right;">
+                        <button class="btn-icon btn-danger" onclick="removeBarber('${b.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // C. AGENDA & STATUS CONTROL
+        function loadAdminAgenda() {
+            db.collection('agendamentos').orderBy('createdAt', 'desc').onSnapshot(snap => {
+                const tbody = document.getElementById('adm-agenda-list');
+                let totalRev = 0;
+                let count = 0;
+
+                tbody.innerHTML = snap.docs.map(d => {
+                    const data = d.data();
+                    const id = d.id;
+                    
+                    // Calc Revenue (Only completed)
+                    if(data.status === 'concluido') {
+                        totalRev += parseFloat(data.servicePrice || 0);
+                        count++;
+                    }
+
+                    return `
+                    <tr>
+                        <td>${data.clientEmail}</td>
+                        <td>${data.serviceName}</td>
+                        <td>${data.barberName}</td>
+                        <td>${data.date} <br> <small>${data.time}</small></td>
+                        <td><span class="status-badge status-${data.status}">${data.status}</span></td>
+                        <td>
+                            <div style="display:flex; gap:5px;">
+                                <button class="btn-icon btn-success" title="Concluir" onclick="updateStatus('${id}', 'concluido')"><i class="fas fa-check"></i></button>
+                                <button class="btn-icon" title="Confirmar" onclick="updateStatus('${id}', 'confirmado')"><i class="fas fa-thumbs-up"></i></button>
+                                <button class="btn-icon btn-danger" title="Cancelar" onclick="updateStatus('${id}', 'cancelado')"><i class="fas fa-times"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+                // Update Dashboard Stats
+                document.getElementById('stat-revenue').innerText = totalRev.toFixed(2);
+                document.getElementById('stat-count').innerText = count;
+                document.getElementById('stat-ticket').innerText = count > 0 ? (totalRev/count).toFixed(2) : '0.00';
             });
+        }
 
-            document.getElementById('dash-revenue').innerText = total.toFixed(2);
-            document.getElementById('dash-today').innerText = todayCount;
+        async function updateStatus(id, status) {
+            await db.collection('agendamentos').doc(id).update({ status: status });
+            showToast(`Status alterado para: ${status}`);
+        }
 
-            // Render Gráfico (Chart.js)
+        // D. PROMOVER ADMIN
+        async function makeAdmin() {
+            const email = document.getElementById('new-admin-email').value;
+            const snap = await db.collection('usuarios').where('email','==',email).get();
+            if(snap.empty) return showToast('Usuário não encontrado');
+            await db.collection('usuarios').doc(snap.docs[0].id).update({admin:true});
+            showToast('Promovido com sucesso!');
+        }
+
+        function renderRevenueChart() {
             const ctx = document.getElementById('revenueChart').getContext('2d');
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
                     datasets: [{
-                        label: 'Faturamento (R$)',
-                        data: [total * 0.2, total * 0.3, total * 0.1, total * 0.4], // Mock distribution
+                        label: 'Faturamento',
+                        data: [1200, 1900, 300, 500], // Mock, in real app aggregate from 'agendamentos'
                         backgroundColor: '#FF6B00',
                         borderRadius: 5
                     }]
                 },
-                options: { responsive: true, plugins: { legend: {display:false} } }
+                options: { responsive: true, plugins: {legend:{display:false}} }
             });
-
-            // Listas de Gestão
-            renderAdminManageLists();
         }
 
-        function renderAdminManageLists() {
-            // Render Admin Services
-            const sList = document.getElementById('adm-services-list');
-            sList.innerHTML = state.data.services.map(s => `
-                <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;">
-                    <span>${s.nome} (R$ ${s.preco})</span>
-                    <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deleteService('${s.id}')"></i>
-                </div>
-            `).join('');
-
-            // Render Admin Barbers
-            const bList = document.getElementById('adm-barbers-list');
-            bList.innerHTML = state.data.barbers.map(b => `
-                <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;">
-                    <span>${b.nome}</span>
-                    <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deleteBarber('${b.id}')"></i>
-                </div>
-            `).join('');
+        // 7. UI UTILS
+        function navTo(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page+'-page').classList.add('active');
+            document.getElementById('nav-links').classList.remove('active'); // mobile close
+            
+            // Nav Active State
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            // Find link manually logic omitted for brevity
         }
 
-        // Funções Admin
-        async function addService() {
-            const nome = document.getElementById('new-serv-name').value;
-            const preco = document.getElementById('new-serv-price').value;
-            if(nome && preco) {
-                await db.collection('servicos').add({nome, preco: parseFloat(preco)});
-                document.getElementById('new-serv-name').value = '';
-                showToast('Serviço adicionado!');
+        function toggleMenu() { document.getElementById('nav-links').classList.toggle('active'); }
+        
+        function openModal(type) {
+            document.getElementById('modal-auth').style.display = 'flex';
+            toggleAuth('login');
+        }
+        function closeModal() { document.getElementById('modal-auth').style.display = 'none'; }
+        
+        function toggleAuth(mode) {
+            if(mode === 'login') {
+                document.getElementById('form-login').classList.remove('hidden');
+                document.getElementById('form-register').classList.add('hidden');
+            } else {
+                document.getElementById('form-login').classList.add('hidden');
+                document.getElementById('form-register').classList.remove('hidden');
             }
         }
-        async function deleteService(id) { if(confirm('Apagar?')) await db.collection('servicos').doc(id).delete(); }
 
-        async function addBarber() {
-            const nome = document.getElementById('new-barb-name').value;
-            if(nome) {
-                await db.collection('barbeiros').add({nome});
-                document.getElementById('new-barb-name').value = '';
-                showToast('Barbeiro adicionado!');
-            }
-        }
-        async function deleteBarber(id) { if(confirm('Apagar?')) await db.collection('barbeiros').doc(id).delete(); }
-
-        async function promoteAdmin() {
-            if(!state.isSuperAdmin) return showToast('Apenas Super Admin');
-            const email = document.getElementById('new-admin-mail').value;
-            const snap = await db.collection('usuarios').where('email','==',email).get();
-            if(snap.empty) return showToast('Usuário não encontrado');
-            await db.collection('usuarios').doc(snap.docs[0].id).update({admin:true});
-            showToast('Promovido!');
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.transform = 'translateY(0)';
+            setTimeout(() => t.style.transform = 'translateY(150%)', 3000);
         }
 
     </script>
