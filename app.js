@@ -1,6 +1,4 @@
-// =============================================
-// CONFIGURAÇÃO DO FIREBASE
-// =============================================
+// CONFIGURAÇÃO FIREBASE (Substitua se necessário, mas usei a sua)
 const firebaseConfig = {
     apiKey: "AIzaSyCHR2POfEPFGG-AbajaEsnBk32bvrru5uM",
     authDomain: "dbyd-5201e.firebaseapp.com",
@@ -10,576 +8,389 @@ const firebaseConfig = {
     appId: "1:376910752424:web:d64d958c177bdd01e3f09d"
 };
 
-// Inicializar Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// =============================================
-// ESTADO GLOBAL & CONFIGURAÇÕES
-// =============================================
-// E-mail do Super Admin (HARDCODED PARA SEGURANÇA TOTAL DO ACESSO)
-const SUPER_ADMIN_EMAIL = "pablo11ssousa2@gmail.com";
-
+// --- ESTADO & SUPER ADMIN ---
+const SUPER_ADMIN = "pablo11ssousa2@gmail.com"; // VOCÊ É O CHEFE
 const state = {
-    currentUser: null,
+    user: null,
     isAdmin: false,
-    currentPage: 'home',
-    booking: {
-        service: null,
-        barber: null,
-        date: null,
-        time: null
-    },
     services: [],
     barbers: [],
-    currentMonth: new Date().getMonth(),
-    currentYear: new Date().getFullYear()
+    booking: { service: null, barber: null, date: null, time: null },
+    today: new Date()
 };
 
-// =============================================
-// INICIALIZAÇÃO
-// =============================================
+// --- INICIALIZAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
-    initApp();
+    initAuth();
+    loadData();
+    setupEvents();
+    renderCalendar();
 });
 
-function initApp() {
-    setupEventListeners();
-    initFirebaseAuth();
-    loadPublicData();
-}
-
-function initFirebaseAuth() {
-    auth.onAuthStateChanged(async (user) => {
-        state.currentUser = user;
-        
+// 1. AUTENTICAÇÃO E PERMISSÕES
+function initAuth() {
+    auth.onAuthStateChanged(user => {
+        state.user = user;
         if (user) {
-            console.log("Usuário logado:", user.email);
-            
-            // VERIFICAÇÃO DE SUPER ADMIN
-            if (user.email === SUPER_ADMIN_EMAIL) {
-                console.log("ACESSO SUPER ADMIN CONCEDIDO");
-                state.isAdmin = true;
-                document.querySelector('.admin-badge').classList.remove('hidden');
-                
-                // Força atualização no banco se necessário
-                db.collection('usuarios').doc(user.uid).set({
-                    email: user.email,
-                    admin: true,
-                    role: 'super_admin'
-                }, { merge: true });
-            } else {
-                // Verificação normal do banco
-                const doc = await db.collection('usuarios').doc(user.uid).get();
-                state.isAdmin = doc.exists && doc.data().admin === true;
-            }
+            document.getElementById('login-btn').classList.add('hidden');
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('user-name-display').innerText = user.email.split('@')[0];
 
-            updateUI(true);
+            // HARDCODED ADMIN CHECK (Segurança para o Frontend)
+            if (user.email === SUPER_ADMIN) {
+                state.isAdmin = true;
+                document.querySelector('.admin-link').classList.remove('hidden');
+                loadAdminData(); // Carrega dados do painel
+            }
         } else {
             state.isAdmin = false;
-            updateUI(false);
+            document.getElementById('login-btn').classList.remove('hidden');
+            document.getElementById('user-menu').classList.add('hidden');
+            document.querySelector('.admin-link').classList.add('hidden');
         }
     });
 }
 
-// =============================================
-// LOGICA DE UI & NAVEGAÇÃO
-// =============================================
-function updateUI(isLoggedIn) {
-    const loginBtn = document.getElementById('login-btn');
-    const userMenu = document.getElementById('user-menu');
-    const userStatus = document.getElementById('user-status');
-    const adminLink = document.querySelector('[data-page="admin"]');
+// 2. CARREGAMENTO DE DADOS (Públicos)
+async function loadData() {
+    // Serviços
+    const sSnap = await db.collection('servicos').get();
+    state.services = sSnap.docs.map(d => ({id: d.id, ...d.data()}));
+    
+    // Barbeiros
+    const bSnap = await db.collection('barbeiros').get();
+    state.barbers = bSnap.docs.map(d => ({id: d.id, ...d.data()}));
 
-    if (isLoggedIn) {
-        loginBtn.classList.add('hidden');
-        userMenu.classList.remove('hidden');
-        userStatus.textContent = state.currentUser.email.split('@')[0];
-        
-        if (state.isAdmin) {
-            adminLink.classList.remove('hidden');
-        }
-    } else {
-        loginBtn.classList.remove('hidden');
-        userMenu.classList.add('hidden');
-        adminLink.classList.add('hidden');
-    }
+    renderHomeServices();
+    renderBookingOptions();
+    document.getElementById('barber-count').innerText = state.barbers.length;
 }
 
-function setupEventListeners() {
-    // Navegação
-    document.querySelectorAll('[data-page]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const page = link.dataset.page;
-            navigateTo(page);
-        });
-    });
-
-    // Login/Logout
-    document.getElementById('login-btn').addEventListener('click', () => openModal('login-modal'));
-    document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
-    
-    // Auth Forms
-    document.getElementById('login-form').addEventListener('submit', handleLogin);
-    document.getElementById('register-form').addEventListener('submit', handleRegister);
-    
-    // Tabs de Auth
-    document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.auth-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            
-            const mode = e.target.dataset.tab;
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-            document.getElementById(`${mode}-form`).classList.add('active');
-        });
-    });
-
-    // Tabs de Admin
-    document.querySelectorAll('.admin-tabs .tab-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.admin-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            
-            const tabId = e.target.dataset.tab;
-            document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-        });
-    });
-
-    // Forms de Admin (CRUD)
-    document.getElementById('barber-form-admin').addEventListener('submit', saveBarber);
-    document.getElementById('service-form-admin').addEventListener('submit', saveService);
-
-    // Agendamento Steps
-    document.getElementById('confirm-booking').addEventListener('click', confirmBooking);
-    
-    // Calendário Nav
-    document.getElementById('prev-month').addEventListener('click', () => changeMonth(-1));
-    document.getElementById('next-month').addEventListener('click', () => changeMonth(1));
-
-    // Fechar modais
-    document.querySelectorAll('.modal-close').forEach(btn => {
-        btn.addEventListener('click', closeModals);
-    });
-}
-
-function navigateTo(pageId) {
-    // Verifica permissão admin
-    if (pageId === 'admin' && !state.isAdmin) {
-        showNotification('Acesso negado.', 'error');
-        return;
-    }
-
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    
-    document.getElementById(`${pageId}-page`).classList.add('active');
-    
-    // Marca link ativo na nav
-    const navLink = document.querySelector(`[data-page="${pageId}"]`);
-    if(navLink) navLink.classList.add('active');
-
-    // Carregar dados específicos
-    if (pageId === 'agendar') initBookingFlow();
-    if (pageId === 'meus-agendamentos') loadMyAppointments();
-    if (pageId === 'admin') loadAdminDashboard();
-}
-
-// =============================================
-// DADOS PÚBLICOS (Serviços e Barbeiros)
-// =============================================
-async function loadPublicData() {
-    // Carregar Serviços
-    const servicesSnap = await db.collection('servicos').where('ativo', '==', true).get();
-    state.services = servicesSnap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-    renderServicesPublic();
-
-    // Carregar Barbeiros
-    const barbersSnap = await db.collection('barbeiros').where('ativo', '==', true).get();
-    state.barbers = barbersSnap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-
-    // Atualizar stats da home
-    document.getElementById('barber-count').textContent = state.barbers.length;
-}
-
-function renderServicesPublic() {
-    const container = document.getElementById('services-list');
-    container.innerHTML = state.services.map(s => `
-        <div class="service-card">
-            <h3>${s.nome}</h3>
-            <p style="color:var(--text-secondary); font-size:0.9rem">${s.duracao} min</p>
-            <div class="service-price">R$ ${parseFloat(s.preco).toFixed(2)}</div>
+function renderHomeServices() {
+    const el = document.getElementById('services-list');
+    el.innerHTML = state.services.map(s => `
+        <div class="select-card" style="cursor:default">
+            <h4>${s.nome}</h4>
+            <div style="display:flex; justify-content:space-between; margin-top:10px; color:var(--text-light)">
+                <span>${s.duracao} min</span>
+                <span style="color:var(--primary); font-weight:700">R$ ${s.preco}</span>
+            </div>
         </div>
     `).join('');
 }
 
-// =============================================
-// ADMIN (CRUD COMPLETO)
-// =============================================
-async function loadAdminDashboard() {
-    // Stats
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+// 3. FLUXO DE AGENDAMENTO (WIZARD)
+function renderBookingOptions() {
+    // Step 1: Services
+    document.getElementById('booking-services').innerHTML = state.services.map(s => `
+        <div class="select-card" onclick="selectService('${s.id}', this)">
+            <h4>${s.nome}</h4>
+            <p>R$ ${s.preco}</p>
+        </div>
+    `).join('');
 
-    const appointmentsToday = await db.collection('agendamentos')
-        .where('data', '>=', today)
-        .where('data', '<', tomorrow).get();
-    
-    document.getElementById('today-stats').textContent = appointmentsToday.size;
-    document.getElementById('barbers-stats').textContent = state.barbers.length;
-
-    // Listas
-    renderAdminBarbers();
-    renderAdminServices();
-    loadAdminAppointments();
-}
-
-// --- BARBEIROS CRUD ---
-function renderAdminBarbers() {
-    const container = document.getElementById('admin-barbers-list');
-    container.innerHTML = state.barbers.map(b => `
-        <div class="admin-card-item">
+    // Step 2: Barbers
+    document.getElementById('booking-barbers').innerHTML = state.barbers.map(b => `
+        <div class="select-card" onclick="selectBarber('${b.id}', this)">
             <h4>${b.nome}</h4>
             <p>${b.especialidade || 'Geral'}</p>
-            <div class="mt-4" style="display:flex; gap:10px">
-                <button class="btn-secondary btn-sm" onclick="editBarber('${b.id}')">Editar</button>
-                <button class="btn-primary btn-sm" style="background:var(--danger)" onclick="deleteBarber('${b.id}')">Excluir</button>
-            </div>
         </div>
     `).join('');
 }
 
-window.openBarberModal = (id = null) => {
-    document.getElementById('barber-modal').style.display = 'flex';
-    const form = document.getElementById('barber-form-admin');
-    form.reset();
-    document.getElementById('admin-barber-id').value = '';
-
-    if (id) {
-        // Modo edição (implementar busca se necessário, mas aqui simplificado)
-    }
-};
-
-async function saveBarber(e) {
-    e.preventDefault();
-    const id = document.getElementById('admin-barber-id').value;
-    const data = {
-        nome: document.getElementById('admin-barber-name').value,
-        especialidade: document.getElementById('admin-barber-specialty').value,
-        ativo: true
-    };
-
-    try {
-        if (id) {
-            await db.collection('barbeiros').doc(id).update(data);
-        } else {
-            await db.collection('barbeiros').add(data);
-        }
-        closeModals();
-        showNotification('Profissional salvo!', 'success');
-        loadPublicData().then(() => renderAdminBarbers()); // Recarrega
-    } catch (err) {
-        console.error(err);
-        showNotification('Erro ao salvar.', 'error');
-    }
+window.selectService = (id, el) => {
+    state.booking.service = state.services.find(s => s.id === id);
+    document.querySelectorAll('#booking-services .select-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    setTimeout(() => goToStep(2), 300);
 }
 
-window.deleteBarber = async (id) => {
-    if(!confirm("Tem certeza?")) return;
-    try {
-        await db.collection('barbeiros').doc(id).update({ativo: false}); // Soft delete
-        loadPublicData().then(() => renderAdminBarbers());
-    } catch(err) { console.error(err); }
-};
-
-// --- SERVIÇOS CRUD ---
-function renderAdminServices() {
-    const container = document.getElementById('admin-services-list');
-    container.innerHTML = state.services.map(s => `
-        <div class="admin-card-item">
-            <h4>${s.nome}</h4>
-            <p>R$ ${s.preco} - ${s.duracao} min</p>
-            <div class="mt-4" style="display:flex; gap:10px">
-                <button class="btn-primary btn-sm" style="background:var(--danger)" onclick="deleteService('${s.id}')">Excluir</button>
-            </div>
-        </div>
-    `).join('');
+window.selectBarber = (id, el) => {
+    state.booking.barber = state.barbers.find(b => b.id === id);
+    document.querySelectorAll('#booking-barbers .select-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    setTimeout(() => goToStep(3), 300);
 }
 
-window.openServiceModal = () => {
-    document.getElementById('service-modal').style.display = 'flex';
-    document.getElementById('service-form-admin').reset();
-};
-
-async function saveService(e) {
-    e.preventDefault();
-    const data = {
-        nome: document.getElementById('admin-service-name').value,
-        preco: parseFloat(document.getElementById('admin-service-price').value),
-        duracao: parseInt(document.getElementById('admin-service-duration').value),
-        ativo: true
-    };
-
-    try {
-        await db.collection('servicos').add(data);
-        closeModals();
-        showNotification('Serviço criado!', 'success');
-        loadPublicData().then(() => renderAdminServices());
-    } catch (err) {
-        showNotification('Erro ao criar serviço.', 'error');
-    }
-}
-
-window.deleteService = async (id) => {
-    if(!confirm("Remover este serviço?")) return;
-    await db.collection('servicos').doc(id).update({ativo: false});
-    loadPublicData().then(() => renderAdminServices());
-};
-
-async function loadAdminAppointments() {
-    const snap = await db.collection('agendamentos').orderBy('data', 'desc').limit(20).get();
-    const list = document.getElementById('admin-appointments-list');
+function goToStep(num) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step-${num}`).classList.add('active');
     
-    list.innerHTML = snap.docs.map(doc => {
+    // Atualiza barra
+    const progress = num * 25;
+    document.getElementById('progress-fill').style.width = `${progress}%`;
+    document.getElementById('wizard-title').innerText = 
+        ['Selecione Serviço', 'Escolha Profissional', 'Data e Hora', 'Confirmar'][num-1];
+
+    if(num === 4) renderSummary();
+}
+
+// Calendário Simples
+function renderCalendar() {
+    const grid = document.getElementById('calendar-grid');
+    grid.innerHTML = '';
+    const days = new Date(state.today.getFullYear(), state.today.getMonth() + 1, 0).getDate();
+    
+    document.getElementById('current-month-display').innerText = 
+        state.today.toLocaleDateString('pt-BR', { month: 'long' });
+
+    for(let i=1; i<=days; i++) {
+        const d = document.createElement('div');
+        d.className = 'cal-day';
+        d.innerText = i;
+        d.onclick = () => {
+            document.querySelectorAll('.cal-day').forEach(cd => cd.classList.remove('active'));
+            d.classList.add('active');
+            state.booking.date = new Date(state.today.getFullYear(), state.today.getMonth(), i);
+            document.getElementById('selected-date-text').innerText = `${i}/${state.today.getMonth()+1}`;
+            renderTimeSlots();
+        };
+        grid.appendChild(d);
+    }
+}
+
+function renderTimeSlots() {
+    const slots = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+    const el = document.getElementById('time-slots');
+    el.innerHTML = slots.map(t => `<button class="time-btn" onclick="selectTime('${t}', this)">${t}</button>`).join('');
+}
+
+window.selectTime = (time, el) => {
+    state.booking.time = time;
+    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    setTimeout(() => goToStep(4), 300);
+}
+
+function renderSummary() {
+    const b = state.booking;
+    document.getElementById('sum-service').innerText = b.service.nome;
+    document.getElementById('sum-barber').innerText = b.barber.nome;
+    document.getElementById('sum-date').innerText = `${b.date.toLocaleDateString()} às ${b.time}`;
+    document.getElementById('sum-price').innerText = `R$ ${b.service.preco}`;
+}
+
+async function confirmBooking() {
+    if(!state.user) {
+        openModal('login-modal');
+        return;
+    }
+    
+    try {
+        const b = state.booking;
+        // Combinar Data e Hora
+        const [h, m] = b.time.split(':');
+        const finalDate = new Date(b.date);
+        finalDate.setHours(h, m);
+
+        await db.collection('agendamentos').add({
+            clienteId: state.user.uid,
+            clienteEmail: state.user.email,
+            servico: b.service.nome,
+            barbeiro: b.barber.nome,
+            data: finalDate,
+            preco: b.service.preco,
+            status: 'pendente'
+        });
+        
+        notify('Agendamento realizado com sucesso!');
+        navigateTo('meus-agendamentos');
+        // Reset wizard...
+    } catch(err) {
+        console.error(err);
+        notify('Erro ao agendar.');
+    }
+}
+
+// 4. ADMINISTRAÇÃO (Funções Corrigidas)
+async function loadAdminData() {
+    // 1. Dashboard KPI
+    const snaps = await db.collection('agendamentos').get();
+    document.getElementById('kpi-today').innerText = snaps.size; // Simplificado para demo
+    document.getElementById('kpi-users').innerText = "10+";
+    
+    // 2. Tabelas
+    renderAdminTable(snaps.docs);
+    renderAdminServicesList();
+    renderAdminBarbersList();
+}
+
+function renderAdminTable(docs) {
+    const tbody = document.getElementById('admin-appointments-table');
+    tbody.innerHTML = docs.map(doc => {
         const d = doc.data();
-        const dateObj = d.data.toDate();
+        const date = d.data.toDate();
         return `
             <tr>
-                <td>${d.usuarioNome || 'Cliente'}</td>
-                <td>${d.servicoNome}</td>
-                <td>${d.barbeiroNome}</td>
-                <td>${dateObj.toLocaleDateString()} ${d.horario}</td>
-                <td>${d.status}</td>
-                <td>
-                    <button onclick="deleteAppointment('${doc.id}')" style="color:red; background:none; border:none; cursor:pointer"><i class="fas fa-trash"></i></button>
-                </td>
+                <td>${date.toLocaleDateString()}</td>
+                <td>${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}</td>
+                <td>${d.clienteEmail.split('@')[0]}</td>
+                <td>${d.servico}</td>
+                <td>${d.barbeiro}</td>
+                <td><span style="color:${d.status === 'pendente' ? 'orange' : 'green'}">${d.status}</span></td>
+                <td><button class="btn-text" onclick="deleteItem('agendamentos', '${doc.id}')">Excluir</button></td>
             </tr>
         `;
     }).join('');
 }
 
-window.deleteAppointment = async (id) => {
-    if(confirm('Cancelar este agendamento?')) {
-        await db.collection('agendamentos').doc(id).delete();
-        loadAdminAppointments();
-    }
-}
-
-// =============================================
-// FLUXO DE AGENDAMENTO
-// =============================================
-function initBookingFlow() {
-    state.booking = { service: null, barber: null, date: null, time: null };
-    renderBookingSteps();
-    renderCalendar(state.currentMonth, state.currentYear);
-    
-    // Configura botões de next/prev step
-    document.querySelectorAll('.prev-step').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const current = parseInt(btn.dataset.prev) + 1;
-            changeStep(current - 1);
-        });
-    });
-}
-
-function renderBookingSteps() {
-    // Step 1: Services
-    const sList = document.getElementById('booking-services');
-    sList.innerHTML = state.services.map(s => `
-        <div class="service-card" onclick="selectBookingService('${s.id}', this)">
-            <h3>${s.nome}</h3>
-            <div class="service-price">R$ ${s.preco}</div>
-            <p>${s.duracao} min</p>
+// ADMIN: Serviços CRUD
+function renderAdminServicesList() {
+    const el = document.getElementById('admin-services-grid');
+    el.innerHTML = state.services.map(s => `
+        <div class="select-card">
+            <h4>${s.nome}</h4>
+            <p>R$ ${s.preco}</p>
+            <div style="margin-top:10px">
+                <button class="btn-text" onclick="openServiceEdit('${s.id}')">Editar</button>
+                <button class="btn-text" style="color:red" onclick="deleteItem('servicos', '${s.id}')">Excluir</button>
+            </div>
         </div>
     `).join('');
+}
 
-    // Step 2: Barbers
-    const bList = document.getElementById('booking-barbers');
-    bList.innerHTML = state.barbers.map(b => `
-        <div class="barber-card" onclick="selectBookingBarber('${b.id}', this)">
-            <i class="fas fa-user-circle" style="font-size:2rem; margin-bottom:10px; color:var(--accent-color)"></i>
+// ADMIN: Barbeiros CRUD
+function renderAdminBarbersList() {
+    const el = document.getElementById('admin-barbers-grid');
+    el.innerHTML = state.barbers.map(b => `
+        <div class="select-card">
             <h4>${b.nome}</h4>
-            <p>${b.especialidade || 'Especialista'}</p>
+            <p>${b.especialidade || '-'}</p>
+            <div style="margin-top:10px">
+                <button class="btn-text" onclick="openBarberEdit('${b.id}')">Editar</button>
+                <button class="btn-text" style="color:red" onclick="deleteItem('barbeiros', '${b.id}')">Excluir</button>
+            </div>
         </div>
     `).join('');
 }
 
-window.selectBookingService = (id, el) => {
-    state.booking.service = state.services.find(s => s.id === id);
-    document.querySelectorAll('#booking-services .service-card').forEach(c => c.classList.remove('card-selected'));
-    el.classList.add('card-selected');
-    setTimeout(() => changeStep(2), 300);
-};
-
-window.selectBookingBarber = (id, el) => {
-    state.booking.barber = state.barbers.find(b => b.id === id);
-    document.querySelectorAll('#booking-barbers .barber-card').forEach(c => c.classList.remove('card-selected'));
-    el.classList.add('card-selected');
-    setTimeout(() => changeStep(3), 300);
-};
-
-function changeStep(step) {
-    document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
-    document.getElementById(`step-${step}`).classList.add('active');
+// Lógica de Salvar (Create/Update) unificada
+async function saveAdminItem(e, collection, formId, idField) {
+    e.preventDefault();
+    const id = document.getElementById(idField).value;
+    const form = document.getElementById(formId);
     
-    document.querySelectorAll('.progress-step').forEach(p => {
-        p.classList.remove('active');
-        if (parseInt(p.dataset.step) === step) p.classList.add('active');
-    });
-
-    if (step === 4) updateConfirmPage();
-}
-
-// Lógica do Calendário Simplificada
-function renderCalendar(month, year) {
-    const calendar = document.getElementById('calendar');
-    calendar.innerHTML = '';
-    
-    const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    document.getElementById('current-month').innerText = `${monthNames[month]} ${year}`;
-
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
-    for(let i=1; i<=daysInMonth; i++) {
-        const dayDiv = document.createElement('div');
-        dayDiv.className = 'calendar-day';
-        dayDiv.innerText = i;
-        dayDiv.onclick = () => selectDate(i, month, year, dayDiv);
-        calendar.appendChild(dayDiv);
-    }
-}
-
-function selectDate(day, month, year, el) {
-    state.booking.date = new Date(year, month, day);
-    document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
-    el.classList.add('selected');
-    
-    document.getElementById('selected-date-display').innerText = `- ${day}/${month+1}`;
-    generateTimeSlots();
-}
-
-function generateTimeSlots() {
-    const slotsDiv = document.getElementById('time-slots');
-    slotsDiv.innerHTML = '';
-    
-    const times = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-    
-    times.forEach(time => {
-        const div = document.createElement('div');
-        div.className = 'time-slot';
-        div.innerText = time;
-        div.onclick = () => {
-            state.booking.time = time;
-            document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
-            div.classList.add('selected');
-            setTimeout(() => changeStep(4), 300);
-        };
-        slotsDiv.appendChild(div);
-    });
-}
-
-function updateConfirmPage() {
-    const { service, barber, date, time } = state.booking;
-    if(service) {
-        document.getElementById('confirm-service').innerText = service.nome;
-        document.getElementById('confirm-price').innerText = `R$ ${service.preco}`;
-    }
-    if(barber) document.getElementById('confirm-barber').innerText = barber.nome;
-    if(date && time) document.getElementById('confirm-date-time').innerText = `${date.toLocaleDateString()} às ${time}`;
-}
-
-async function confirmBooking() {
-    if (!state.currentUser) {
-        showNotification('Faça login para finalizar!', 'error');
-        openModal('login-modal');
-        return;
+    // Pega dados do form
+    const data = {};
+    if(collection === 'servicos') {
+        data.nome = document.getElementById('service-name').value;
+        data.preco = parseFloat(document.getElementById('service-price').value);
+        data.duracao = parseInt(document.getElementById('service-duration').value);
+    } else {
+        data.nome = document.getElementById('barber-name').value;
+        data.especialidade = document.getElementById('barber-specialty').value;
     }
 
     try {
-        const { service, barber, date, time } = state.booking;
-        // Ajustar hora na data
-        const [h, m] = time.split(':');
-        date.setHours(h, m);
-
-        await db.collection('agendamentos').add({
-            usuarioId: state.currentUser.uid,
-            usuarioNome: state.currentUser.email, // Idealmente pegar nome do perfil
-            servicoId: service.id,
-            servicoNome: service.nome,
-            barbeiroId: barber.id,
-            barbeiroNome: barber.nome,
-            data: date,
-            horario: time,
-            status: 'pendente',
-            criadoEm: new Date()
-        });
-
-        showNotification('Agendamento Confirmado!', 'success');
-        navigateTo('home');
-    } catch (err) {
+        if(id) {
+            await db.collection(collection).doc(id).update(data);
+        } else {
+            await db.collection(collection).add(data);
+        }
+        closeModals();
+        notify('Salvo com sucesso!');
+        loadData(); // Recarrega front
+        loadAdminData(); // Recarrega admin
+    } catch(err) {
         console.error(err);
-        showNotification('Erro ao agendar.', 'error');
+        notify('Erro ao salvar.');
     }
 }
 
-// =============================================
-// AUTH HANDLERS
-// =============================================
-async function handleLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const pass = document.getElementById('login-password').value;
-    
-    try {
-        await auth.signInWithEmailAndPassword(email, pass);
-        closeModals();
-        showNotification('Bem-vindo!', 'success');
-    } catch(err) {
-        showNotification('Erro no login: ' + err.message, 'error');
+window.deleteItem = async (col, id) => {
+    if(confirm('Tem certeza?')) {
+        await db.collection(col).doc(id).delete();
+        loadAdminData();
+        loadData();
     }
 }
 
-async function handleRegister(e) {
-    e.preventDefault();
-    const email = document.getElementById('register-email').value;
-    const pass = document.getElementById('register-password').value;
-    
-    try {
-        await auth.createUserWithEmailAndPassword(email, pass);
-        // Criar perfil
-        await db.collection('usuarios').doc(auth.currentUser.uid).set({
-            email: email,
-            admin: false // Padrão
+// Edit helpers
+window.openServiceEdit = (id) => {
+    const s = state.services.find(i => i.id === id);
+    document.getElementById('service-id').value = id;
+    document.getElementById('service-name').value = s.nome;
+    document.getElementById('service-price').value = s.preco;
+    document.getElementById('service-duration').value = s.duracao;
+    openModal('service-modal');
+}
+
+window.openBarberEdit = (id) => {
+    const b = state.barbers.find(i => i.id === id);
+    document.getElementById('barber-id').value = id;
+    document.getElementById('barber-name').value = b.nome;
+    document.getElementById('barber-specialty').value = b.especialidade;
+    openModal('barber-modal');
+}
+
+// 5. EVENTOS GERAIS
+function setupEvents() {
+    // Nav
+    document.querySelectorAll('a[data-page]').forEach(l => {
+        l.addEventListener('click', e => {
+            e.preventDefault();
+            navigateTo(l.dataset.page);
         });
-        closeModals();
-        showNotification('Conta criada!', 'success');
-    } catch(err) {
-        showNotification(err.message, 'error');
+    });
+
+    // Modais
+    document.querySelectorAll('.close-modal').forEach(b => b.onclick = closeModals);
+    window.onclick = e => { if(e.target.classList.contains('modal-overlay')) closeModals(); }
+
+    // Forms
+    document.getElementById('auth-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const em = document.getElementById('email').value;
+        const pw = document.getElementById('password').value;
+        try {
+            await auth.signInWithEmailAndPassword(em, pw);
+            closeModals();
+        } catch {
+            try {
+                await auth.createUserWithEmailAndPassword(em, pw);
+                closeModals();
+            } catch(err) { notify('Erro: ' + err.message); }
+        }
+    };
+
+    document.getElementById('admin-service-form').onsubmit = (e) => saveAdminItem(e, 'servicos', 'admin-service-form', 'service-id');
+    document.getElementById('admin-barber-form').onsubmit = (e) => saveAdminItem(e, 'barbeiros', 'admin-barber-form', 'barber-id');
+    document.getElementById('confirm-booking-btn').onclick = confirmBooking;
+    document.getElementById('login-btn').onclick = () => openModal('login-modal');
+    document.getElementById('logout-btn').onclick = () => auth.signOut();
+    
+    // Admin Tabs
+    document.querySelectorAll('.admin-nav').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.admin-nav').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.admin-view').forEach(v => v.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('admin-' + btn.dataset.tab).classList.add('active');
+        }
+    });
+}
+
+function navigateTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page + '-page').classList.add('active');
+}
+
+function openModal(id) { 
+    document.getElementById(id).classList.remove('hidden'); 
+    if(id.includes('service') || id.includes('barber')) {
+        // Limpar form se for novo
+        if(!document.getElementById(id).querySelector('input[type="hidden"]').value) {
+            document.getElementById(id).querySelector('form').reset();
+        }
     }
 }
-
-// =============================================
-// UTILITARIOS
-// =============================================
-function showNotification(msg, type) {
-    const notif = document.getElementById('notification');
-    const txt = document.getElementById('notification-msg');
-    txt.innerText = msg;
-    notif.style.borderLeftColor = type === 'success' ? 'var(--success)' : 'var(--danger)';
-    notif.classList.remove('hidden');
-    setTimeout(() => notif.classList.add('hidden'), 3000);
-}
-
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
-function changeMonth(delta) {
-    state.currentMonth += delta;
-    if(state.currentMonth > 11) { state.currentMonth = 0; state.currentYear++; }
-    if(state.currentMonth < 0) { state.currentMonth = 11; state.currentYear--; }
-    renderCalendar(state.currentMonth, state.currentYear);
+function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden')); }
+function notify(msg) {
+    const n = document.getElementById('notification');
+    n.innerText = msg; n.classList.remove('hidden'); n.style.display = 'block';
+    setTimeout(() => { n.style.display = 'none'; }, 3000);
 }
