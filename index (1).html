@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precision Barbers - Agendamentos</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Efeitos de fundo -->
+    <div class="bg-grid"></div>
+    <div class="bg-blur"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar glass-effect">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <div class="logo-dot"></div>
+                    <i class="fas fa-cut"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-primary">PRECISION</span>
+                    <span class="logo-secondary">BARBERS</span>
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a href="#" data-page="home" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                    <div class="link-underline"></div>
+                </a>
+                <a href="#" data-page="agendar" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Agendar</span>
+                    <div class="link-underline"></div>
+                </a>
+                <a href="#" data-page="meus-agendamentos" class="nav-link">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Meus Agendamentos</span>
+                    <div class="link-underline"></div>
+                </a>
+                <a href="#" data-page="admin" class="nav-link hidden">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                    <div class="link-underline"></div>
+                </a>
+                
+                <div class="user-section">
+                    <a href="#" id="login-btn" class="nav-link user-link">
+                        <i class="fas fa-user"></i>
+                        <span id="user-status">Entrar</span>
+                        <div class="link-underline"></div>
+                    </a>
+                    <button id="logout-btn" class="btn-icon hidden">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button class="menu-toggle">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Modal de Login -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-container glass-effect">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h2 class="modal-title">Acesso à Conta</h2>
+                <button class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </button>
+                <button class="tab-btn" data-tab="register">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Cadastro</span>
+                </button>
+            </div>
+
+            <!-- Form Login -->
+            <form id="login-form" class="auth-form active">
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <input type="email" id="login-email" placeholder="E-mail" class="input-glass" required>
+                    <div class="input-border"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input type="password" id="login-password" placeholder="Senha" class="input-glass" required>
+                    <div class="input-border"></div>
+                </div>
+                
+                <button type="submit" class="btn-primary btn-glow">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Acessar Conta</span>
+                </button>
+                
+                <button type="button" id="forgot-password" class="btn-text">
+                    <i class="fas fa-key"></i>
+                    <span>Esqueci minha senha</span>
+                </button>
+            </form>
+
+            <!-- Form Cadastro -->
+            <form id="register-form" class="auth-form">
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <input type="text" id="register-name" placeholder="Nome Completo" class="input-glass" required>
+                    <div class="input-border"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <input type="tel" id="register-phone" placeholder="Telefone" class="input-glass" required>
+                    <div class="input-border"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <input type="email" id="register-email" placeholder="E-mail" class="input-glass" required>
+                    <div class="input-border"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input type="password" id="register-password" placeholder="Senha (mínimo 6 caracteres)" class="input-glass" minlength="6" required>
+                    <div class="input-border"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input type="password" id="register-confirm" placeholder="Confirmar Senha" class="input-glass" minlength="6" required>
+                    <div class="input-border"></div>
+                </div>
+                
+                <button type="submit" class="btn-primary btn-glow">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Criar Conta</span>
+                </button>
+            </form>
+
+            <!-- Recuperar Senha -->
+            <form id="recover-form" class="auth-form hidden">
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <input type="email" id="recover-email" placeholder="Seu e-mail cadastrado" class="input-glass" required>
+                    <div class="input-border"></div>
+                </div>
+                
+                <button type="submit" class="btn-primary btn-glow">
+                    <i class="fas fa-key"></i>
+                    <span>Enviar Link de Recuperação</span>
+                </button>
+                
+                <button type="button" id="back-to-login" class="btn-text">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Voltar para login</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main id="content">
+        <!-- Página Home -->
+        <section id="home-page" class="page active">
+            <div class="hero-section">
+                <div class="container">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <span>EXPERIÊNCIA PREMIUM</span>
+                            <div class="badge-glow"></div>
+                        </div>
+                        <h1 class="hero-title">
+                            <span class="hero-gradient">PRECISION</span>
+                            <span class="hero-subtitle">Corte Perfeito. Estilo Ilimitado.</span>
+                        </h1>
+                        <p class="hero-description">
+                            Descubra a arte da barbearia moderna com nossos especialistas. 
+                            Agendamento online, ambiente exclusivo e resultados excepcionais.
+                        </p>
+                        <div class="hero-actions">
+                            <button class="btn-primary btn-glow" data-page="agendar">
+                                <i class="fas fa-calendar-plus"></i>
+                                <span>Agendar Horário</span>
+                            </button>
+                            <button class="btn-secondary" data-page="meus-agendamentos">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Ver Agendamentos</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="barber-count">0</h3>
+                                <p class="stat-label">Especialistas</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="appointments-today">0</h3>
+                                <p class="stat-label">Agendamentos Hoje</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">4.9</h3>
+                                <p class="stat-label">Avaliação Média</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <!-- Serviços -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-badge">SERVIÇOS</div>
+                        <h2 class="section-title">Nossos Serviços <span class="highlight">Premium</span></h2>
+                        <p class="section-description">Cada serviço é executado com precisão e atenção aos detalhes</p>
+                    </div>
+                    
+                    <div class="services-grid" id="services-list">
+                        <!-- Serviços carregados via JS -->
+                    </div>
+                </section>
+
+                <!-- Por que escolher -->
+                <section class="section">
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                            </div>
+                            <h3 class="feature-title">Qualidade Garantida</h3>
+                            <p class="feature-description">Profissionais certificados e produtos premium</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                            <h3 class="feature-title">Agendamento 24h</h3>
+                            <p class="feature-description">Agende quando quiser, sem complicação</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                            </div>
+                            <h3 class="feature-title">Higiene Total</h3>
+                            <p class="feature-description">Ambiente esterilizado e protocolos rigorosos</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                            </div>
+                            <h3 class="feature-title">Experiência Premium</h3>
+                            <p class="feature-description">Atendimento personalizado e exclusivo</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- Página Agendar -->
+        <section id="agendar-page" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <div class="page-badge">AGENDAMENTO</div>
+                    <h1 class="page-title">Novo <span class="highlight">Agendamento</span></h1>
+                    <p class="page-subtitle">Escolha seu serviço, especialista e horário ideal</p>
+                </div>
+
+                <!-- Progresso -->
+                <div class="progress-container">
+                    <div class="progress-line"></div>
+                    <div class="progress-steps">
+                        <div class="progress-step active" data-step="1">
+                            <div class="step-circle">
+                                <div class="circle-inner">
+                                    <span class="step-number">1</span>
+                                    <div class="step-glow"></div>
+                                </div>
+                            </div>
+                            <span class="step-label">Serviço</span>
+                        </div>
+                        <div class="progress-step" data-step="2">
+                            <div class="step-circle">
+                                <div class="circle-inner">
+                                    <span class="step-number">2</span>
+                                    <div class="step-glow"></div>
+                                </div>
+                            </div>
+                            <span class="step-label">Especialista</span>
+                        </div>
+                        <div class="progress-step" data-step="3">
+                            <div class="step-circle">
+                                <div class="circle-inner">
+                                    <span class="step-number">3</span>
+                                    <div class="step-glow"></div>
+                                </div>
+                            </div>
+                            <span class="step-label">Data & Hora</span>
+                        </div>
+                        <div class="progress-step" data-step="4">
+                            <div class="step-circle">
+                                <div class="circle-inner">
+                                    <span class="step-number">4</span>
+                                    <div class="step-glow"></div>
+                                </div>
+                            </div>
+                            <span class="step-label">Confirmar</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passo 1: Serviço -->
+                <div id="step-1" class="step-content active">
+                    <div class="step-header">
+                        <h2 class="step-title">Escolha seu <span class="highlight">serviço</span></h2>
+                        <p class="step-description">Selecione o serviço desejado para continuar</p>
+                    </div>
+                    
+                    <div class="services-selection" id="booking-services">
+                        <!-- Carregado via JS -->
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-secondary" data-page="home">
+                            <i class="fas fa-times"></i>
+                            <span>Cancelar</span>
+                        </button>
+                        <button class="btn-primary btn-glow next-step" data-next="2" disabled>
+                            <span>Continuar</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Passo 2: Barbeiro -->
+                <div id="step-2" class="step-content">
+                    <div class="step-header">
+                        <h2 class="step-title">Escolha seu <span class="highlight">especialista</span></h2>
+                        <p class="step-description">Selecione o profissional que atenderá você</p>
+                    </div>
+                    
+                    <div class="barbers-selection" id="booking-barbers">
+                        <!-- Carregado via JS -->
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-secondary prev-step" data-prev="1">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Voltar</span>
+                        </button>
+                        <button class="btn-primary btn-glow next-step" data-next="3" disabled>
+                            <span>Continuar</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Passo 3: Data e Hora -->
+                <div id="step-3" class="step-content">
+                    <div class="step-header">
+                        <h2 class="step-title">Escolha <span class="highlight">data e horário</span></h2>
+                        <p class="step-description">Selecione o dia e horário que melhor se encaixa na sua agenda</p>
+                    </div>
+                    
+                    <div class="datetime-selection">
+                        <div class="calendar-container glass-effect">
+                            <div class="calendar-header">
+                                <button id="prev-month" class="btn-icon">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <h3 id="current-month" class="calendar-title"></h3>
+                                <button id="next-month" class="btn-icon">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="calendar-weekdays">
+                                <span>Dom</span>
+                                <span>Seg</span>
+                                <span>Ter</span>
+                                <span>Qua</span>
+                                <span>Qui</span>
+                                <span>Sex</span>
+                                <span>Sáb</span>
+                            </div>
+                            <div class="calendar-grid" id="calendar">
+                                <!-- Gerado via JS -->
+                            </div>
+                        </div>
+                        
+                        <div class="times-container glass-effect">
+                            <div class="times-header">
+                                <h3 class="times-title">Horários Disponíveis</h3>
+                                <div class="times-subtitle" id="selected-date"></div>
+                            </div>
+                            <div class="time-slots" id="time-slots">
+                                <!-- Carregado via JS -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-secondary prev-step" data-prev="2">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Voltar</span>
+                        </button>
+                        <button class="btn-primary btn-glow next-step" data-next="4" disabled>
+                            <span>Continuar</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Passo 4: Confirmação -->
+                <div id="step-4" class="step-content">
+                    <div class="step-header">
+                        <h2 class="step-title">Confirme seu <span class="highlight">agendamento</span></h2>
+                        <p class="step-description">Revise os detalhes e confirme seu horário</p>
+                    </div>
+                    
+                    <div class="confirmation-card glass-effect">
+                        <div class="confirmation-header">
+                            <div class="confirmation-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <h3 class="confirmation-title">Resumo do Agendamento</h3>
+                        </div>
+                        
+                        <div class="confirmation-details">
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-cut"></i>
+                                    <span>Serviço:</span>
+                                </div>
+                                <div class="detail-value" id="confirm-service">-</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span>Especialista:</span>
+                                </div>
+                                <div class="detail-value" id="confirm-barber">-</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Data:</span>
+                                </div>
+                                <div class="detail-value" id="confirm-date">-</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Horário:</span>
+                                </div>
+                                <div class="detail-value" id="confirm-time">-</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span>Valor:</span>
+                                </div>
+                                <div class="detail-value" id="confirm-price">-</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    <span>Duração:</span>
+                                </div>
+                                <div class="detail-value" id="confirm-duration">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="confirmation-footer">
+                            <div class="confirmation-total">
+                                <span class="total-label">Total:</span>
+                                <span class="total-value" id="confirm-total">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-secondary prev-step" data-prev="3">
+                            <i class="fas fa-edit"></i>
+                            <span>Alterar</span>
+                        </button>
+                        <button id="confirm-booking" class="btn-primary btn-glow">
+                            <i class="fas fa-check"></i>
+                            <span>Confirmar Agendamento</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página Meus Agendamentos -->
+        <section id="meus-agendamentos-page" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <div class="page-badge">ÁREA DO CLIENTE</div>
+                    <h1 class="page-title">Meus <span class="highlight">Agendamentos</span></h1>
+                    <p class="page-subtitle">Gerencie seus horários agendados</p>
+                </div>
+
+                <!-- Perfil -->
+                <div class="profile-card glass-effect">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <div class="avatar-circle">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="profile-status">
+                                <div class="status-dot active"></div>
+                            </div>
+                        </div>
+                        <div class="profile-info">
+                            <h3 class="profile-name" id="user-name">Carregando...</h3>
+                            <p class="profile-email" id="user-email"></p>
+                            <div class="profile-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span id="user-phone">Não informado</span>
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span id="user-since">Hoje</span>
+                                </span>
+                            </div>
+                        </div>
+                        <button id="edit-profile-btn" class="btn-secondary">
+                            <i class="fas fa-edit"></i>
+                            <span>Editar Perfil</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="upcoming">
+                            <i class="fas fa-clock"></i>
+                            <span>Próximos</span>
+                            <div class="tab-indicator"></div>
+                        </button>
+                        <button class="tab-btn" data-tab="history">
+                            <i class="fas fa-history"></i>
+                            <span>Histórico</span>
+                            <div class="tab-indicator"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Agendamentos -->
+                <div id="upcoming" class="tab-content active">
+                    <div class="appointments-container">
+                        <div class="appointments-list" id="upcoming-list">
+                            <!-- Carregado via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="history" class="tab-content">
+                    <div class="appointments-container">
+                        <div class="appointments-list" id="history-list">
+                            <!-- Carregado via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Editar Perfil -->
+                <div id="edit-profile-modal" class="modal-overlay">
+                    <div class="modal-container glass-effect">
+                        <div class="modal-header">
+                            <div class="modal-icon">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
+                            <h2 class="modal-title">Editar Perfil</h2>
+                            <button class="modal-close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="edit-profile-form">
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <input type="text" id="edit-name" placeholder="Nome Completo" class="input-glass" required>
+                                <div class="input-border"></div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <input type="tel" id="edit-phone" placeholder="Telefone" class="input-glass" required>
+                                <div class="input-border"></div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary modal-close">
+                                    <i class="fas fa-times"></i>
+                                    <span>Cancelar</span>
+                                </button>
+                                <button type="submit" class="btn-primary btn-glow">
+                                    <i class="fas fa-save"></i>
+                                    <span>Salvar Alterações</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página Admin -->
+        <section id="admin-page" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <div class="page-badge">ADMINISTRAÇÃO</div>
+                    <h1 class="page-title">Painel <span class="highlight">Administrativo</span></h1>
+                    <p class="page-subtitle">Gerencie todos os aspectos da barbearia</p>
+                </div>
+
+                <div id="admin-access" class="access-denied glass-effect">
+                    <div class="access-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2 class="access-title">Acesso Restrito</h2>
+                    <p class="access-description">Esta área é exclusiva para administradores do sistema</p>
+                    <button class="btn-secondary" data-page="home">
+                        <i class="fas fa-home"></i>
+                        <span>Voltar para Home</span>
+                    </button>
+                </div>
+
+                <div id="admin-content" class="hidden">
+                    <!-- Tabs Admin -->
+                    <div class="admin-tabs-container">
+                        <div class="admin-tabs">
+                            <button class="admin-tab active" data-tab="dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Dashboard</span>
+                                <div class="tab-glow"></div>
+                            </button>
+                            <button class="admin-tab" data-tab="agendamentos">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Agendamentos</span>
+                                <div class="tab-glow"></div>
+                            </button>
+                            <button class="admin-tab" data-tab="barbeiros">
+                                <i class="fas fa-user-tie"></i>
+                                <span>Especialistas</span>
+                                <div class="tab-glow"></div>
+                            </button>
+                            <button class="admin-tab" data-tab="servicos">
+                                <i class="fas fa-cut"></i>
+                                <span>Serviços</span>
+                                <div class="tab-glow"></div>
+                            </button>
+                            <button class="admin-tab" data-tab="configuracoes">
+                                <i class="fas fa-cogs"></i>
+                                <span>Configurações</span>
+                                <div class="tab-glow"></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard -->
+                    <div id="dashboard" class="admin-tab-content active">
+                        <div class="stats-grid">
+                            <div class="stat-card admin-stat">
+                                <div class="stat-header">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </div>
+                                    <div class="stat-trend up">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <span>12%</span>
+                                    </div>
+                                </div>
+                                <div class="stat-content">
+                                    <h3 class="stat-value" id="today-stats">0</h3>
+                                    <p class="stat-label">Agendamentos Hoje</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card admin-stat">
+                                <div class="stat-header">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="stat-trend up">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <span>8%</span>
+                                    </div>
+                                </div>
+                                <div class="stat-content">
+                                    <h3 class="stat-value" id="confirmed-stats">0</h3>
+                                    <p class="stat-label">Confirmados</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card admin-stat">
+                                <div class="stat-header">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div class="stat-trend">
+                                        <i class="fas fa-minus"></i>
+                                        <span>0%</span>
+                                    </div>
+                                </div>
+                                <div class="stat-content">
+                                    <h3 class="stat-value" id="barbers-stats">0</h3>
+                                    <p class="stat-label">Especialistas Ativos</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card admin-stat">
+                                <div class="stat-header">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <div class="stat-trend up">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <span>15%</span>
+                                    </div>
+                                </div>
+                                <div class="stat-content">
+                                    <h3 class="stat-value" id="revenue-stats">R$ 0</h3>
+                                    <p class="stat-label">Receita do Mês</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-section">
+                            <div class="section-header">
+                                <h2 class="section-title">Agendamentos Recentes</h2>
+                            </div>
+                            <div class="recent-appointments" id="recent-appointments">
+                                <!-- Carregado via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agendamentos -->
+                    <div id="agendamentos" class="admin-tab-content">
+                        <div class="admin-section">
+                            <div class="section-header">
+                                <h2 class="section-title">Todos os Agendamentos</h2>
+                                <div class="section-filters">
+                                    <div class="filter-group">
+                                        <i class="fas fa-calendar"></i>
+                                        <input type="date" id="filter-date" class="filter-input">
+                                    </div>
+                                    <div class="filter-group">
+                                        <i class="fas fa-user-tie"></i>
+                                        <select id="filter-barber" class="filter-select">
+                                            <option value="">Todos os especialistas</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-group">
+                                        <i class="fas fa-filter"></i>
+                                        <select id="filter-status" class="filter-select">
+                                            <option value="">Todos os status</option>
+                                            <option value="pendente">Pendente</option>
+                                            <option value="confirmado">Confirmado</option>
+                                            <option value="realizado">Realizado</option>
+                                            <option value="cancelado">Cancelado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-container glass-effect">
+                                <div class="table-responsive">
+                                    <table class="admin-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Cliente</th>
+                                                <th>Serviço</th>
+                                                <th>Especialista</th>
+                                                <th>Data/Hora</th>
+                                                <th>Valor</th>
+                                                <th>Status</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="admin-appointments">
+                                            <!-- Carregado via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barbeiros -->
+                    <div id="barbeiros" class="admin-tab-content">
+                        <div class="admin-section">
+                            <div class="section-header">
+                                <h2 class="section-title">Gerenciar Especialistas</h2>
+                                <button class="btn-primary btn-glow" id="add-barber-btn">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Novo Especialista</span>
+                                </button>
+                            </div>
+                            
+                            <div class="grid-container">
+                                <div class="admin-grid" id="admin-barbers">
+                                    <!-- Carregado via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Serviços -->
+                    <div id="servicos" class="admin-tab-content">
+                        <div class="admin-section">
+                            <div class="section-header">
+                                <h2 class="section-title">Gerenciar Serviços</h2>
+                                <button class="btn-primary btn-glow" id="add-service-btn">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Novo Serviço</span>
+                                </button>
+                            </div>
+                            
+                            <div class="grid-container">
+                                <div class="admin-grid" id="admin-services">
+                                    <!-- Carregado via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configurações -->
+                    <div id="configuracoes" class="admin-tab-content">
+                        <div class="admin-section">
+                            <h2 class="section-title">Configurações da Barbearia</h2>
+                            
+                            <div class="settings-container">
+                                <div class="settings-card glass-effect">
+                                    <h3 class="settings-title">
+                                        <i class="fas fa-clock"></i>
+                                        Horário de Funcionamento
+                                    </h3>
+                                    <div id="business-hours-container">
+                                        <!-- Horários carregados via JS -->
+                                    </div>
+                                    <button class="btn-secondary" id="save-business-hours">
+                                        <i class="fas fa-save"></i>
+                                        <span>Salvar Horários</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="settings-card glass-effect">
+                                    <h3 class="settings-title">
+                                        <i class="fas fa-calendar-times"></i>
+                                        Dias de Fechamento
+                                    </h3>
+                                    <div class="form-group">
+                                        <label>Adicionar data de fechamento:</label>
+                                        <div class="input-group">
+                                            <input type="date" id="new-closure-date" class="input-glass">
+                                            <button class="btn-primary" id="add-closure-date">
+                                                <i class="fas fa-plus"></i>
+                                                Adicionar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="closure-days-list">
+                                        <!-- Dias de fechamento carregados via JS -->
+                                    </div>
+                                </div>
+                                
+                                <div class="settings-card glass-effect">
+                                    <h3 class="settings-title">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Configurações de Agendamento
+                                    </h3>
+                                    <div class="form-group">
+                                        <label>Intervalo entre agendamentos (minutos):</label>
+                                        <input type="number" id="interval-minutes" class="input-glass" min="15" value="30">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Dias máximos para agendar futuramente:</label>
+                                        <input type="number" id="max-days-ahead" class="input-glass" min="1" value="60">
+                                    </div>
+                                    <button class="btn-primary btn-glow" id="save-settings">
+                                        <i class="fas fa-save"></i>
+                                        <span>Salvar Configurações</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Barbeiro -->
+                <div id="barber-modal" class="modal-overlay">
+                    <div class="modal-container glass-effect">
+                        <div class="modal-header">
+                            <div class="modal-icon">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <h2 class="modal-title" id="barber-modal-title">Novo Especialista</h2>
+                            <button class="modal-close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="barber-form">
+                            <input type="hidden" id="barber-id">
+                            
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <input type="text" id="barber-name" placeholder="Nome do Especialista" class="input-glass" required>
+                                <div class="input-border"></div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <input type="email" id="barber-email" placeholder="E-mail (opcional)" class="input-glass">
+                                <div class="input-border"></div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <input type="tel" id="barber-phone" placeholder="Telefone (opcional)" class="input-glass">
+                                <div class="input-border"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Serviços Oferecidos</label>
+                                <div class="services-checklist" id="barber-services-checklist">
+                                    <!-- Carregado via JS -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="barber-active" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span>Especialista ativo</span>
+                                </label>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary modal-close">
+                                    <i class="fas fa-times"></i>
+                                    <span>Cancelar</span>
+                                </button>
+                                <button type="submit" class="btn-primary btn-glow">
+                                    <i class="fas fa-save"></i>
+                                    <span>Salvar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal Serviço -->
+                <div id="service-modal" class="modal-overlay">
+                    <div class="modal-container glass-effect">
+                        <div class="modal-header">
+                            <div class="modal-icon">
+                                <i class="fas fa-cut"></i>
+                            </div>
+                            <h2 class="modal-title" id="service-modal-title">Novo Serviço</h2>
+                            <button class="modal-close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="service-form">
+                            <input type="hidden" id="service-id">
+                            
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <input type="text" id="service-name" placeholder="Nome do Serviço" class="input-glass" required>
+                                <div class="input-border"></div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <div class="input-icon">
+                                    <i class="fas fa-align-left"></i>
+                                </div>
+                                <textarea id="service-description" placeholder="Descrição (opcional)" class="input-glass textarea-glass" rows="3"></textarea>
+                                <div class="input-border"></div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <div class="input-icon">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <input type="number" id="service-price" placeholder="Preço (R$)" class="input-glass" step="0.01" min="0" required>
+                                    <div class="input-border"></div>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <div class="input-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <input type="number" id="service-duration" placeholder="Duração (min)" class="input-glass" min="15" step="15" required>
+                                    <div class="input-border"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="service-active" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span>Serviço ativo</span>
+                                </label>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary modal-close">
+                                    <i class="fas fa-times"></i>
+                                    <span>Cancelar</span>
+                                </button>
+                                <button type="submit" class="btn-primary btn-glow">
+                                    <i class="fas fa-save"></i>
+                                    <span>Salvar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal Status Agendamento -->
+                <div id="status-modal" class="modal-overlay">
+                    <div class="modal-container glass-effect">
+                        <div class="modal-header">
+                            <div class="modal-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <h2 class="modal-title">Alterar Status</h2>
+                            <button class="modal-close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="status-form">
+                            <input type="hidden" id="status-appointment-id">
+                            
+                            <div class="form-group">
+                                <label>Novo Status:</label>
+                                <select id="new-status" class="input-glass" required>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="confirmado">Confirmado</option>
+                                    <option value="realizado">Realizado</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary modal-close">
+                                    <i class="fas fa-times"></i>
+                                    <span>Cancelar</span>
+                                </button>
+                                <button type="submit" class="btn-primary btn-glow">
+                                    <i class="fas fa-save"></i>
+                                    <span>Atualizar Status</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div class="logo-icon small">
+                            <div class="logo-dot"></div>
+                            <i class="fas fa-cut"></i>
+                        </div>
+                        <div class="footer-logo-text">
+                            <span class="logo-primary">PRECISION</span>
+                            <span class="logo-secondary">BARBERS</span>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        Excelência em cuidados masculinos. 
+                        Precisão em cada detalhe.
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Contato</h3>
+                    <div class="footer-contact">
+                        <p class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="business-address">Av. Principal, 123 - Centro</span>
+                        </p>
+                        <p class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span id="business-phone">(11) 9999-9999</span>
+                        </p>
+                        <p class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="business-hours">Seg-Sex: 9h-19h | Sáb: 9h-17h</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Redes Sociais</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="copyright">
+                    © 2024 Precision Barbers. Todos os direitos reservados.
+                </p>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Política de Privacidade</a>
+                    <a href="#" class="footer-link">Termos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notificações -->
+    <div id="notification" class="notification hidden">
+        <div class="notification-content glass-effect">
+            <div class="notification-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="notification-text">
+                <span id="notification-message"></span>
+            </div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-container">
+            <div class="loading-spinner">
+                <div class="spinner-circle"></div>
+                <div class="spinner-glow"></div>
+            </div>
+            <span class="loading-text">Carregando...</span>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- App JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
