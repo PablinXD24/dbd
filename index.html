@@ -3,168 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BarberTime | Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>BarberTime | Glass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass-bg: rgba(20, 20, 35, 0.65);
+            --primary: #00d2ff;
+            --primary-dark: #009bbd;
+            --danger: #ff4757;
+            --glass-bg: rgba(255, 255, 255, 0.07);
             --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --primary: #00f2ff;
-            --primary-hover: #00c8d4;
+            --glass-blur: blur(20px);
             --text-main: #ffffff;
-            --text-muted: #a0a0b0;
-            --danger: #ff4b4b;
-            --bg-gradient: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 100%);
+            --text-sec: #a4b0be;
+            --bg-gradient: radial-gradient(circle at top left, #1e272e, #000000);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            margin: 0;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg-gradient);
             color: var(--text-main);
+            margin: 0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
             overflow-x: hidden;
+            padding: 20px;
         }
 
-        /* Background Effects */
+        /* --- BACKGROUND FX --- */
         .orb {
             position: fixed;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(90px);
             z-index: -1;
-            opacity: 0.5;
-            animation: float 10s infinite ease-in-out;
+            opacity: 0.6;
         }
-        .orb-1 { top: -100px; left: -100px; width: 300px; height: 300px; background: #7000ff; }
-        .orb-2 { bottom: -100px; right: -100px; width: 250px; height: 250px; background: #00f2ff; animation-delay: -5s; }
+        .orb-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #3742fa; animation: float 10s infinite alternate; }
+        .orb-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #e056fd; animation: float 12s infinite alternate-reverse; }
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(20px); } }
+        @keyframes float { from { transform: translate(0,0); } to { transform: translate(20px, 40px); } }
 
-        /* Card Container */
-        .glass-card {
+        /* --- GLASS CARD --- */
+        .app-container {
             background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
             border: var(--glass-border);
-            box-shadow: var(--glass-shadow);
             border-radius: 24px;
             padding: 30px;
             width: 100%;
-            max-width: 420px;
-            position: relative;
-            overflow: hidden;
+            max-width: 450px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease;
         }
 
-        h1, h2 { margin: 0 0 10px 0; text-align: center; font-weight: 600; }
-        h1 { background: linear-gradient(90deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        p { color: var(--text-muted); text-align: center; font-size: 0.9rem; margin-bottom: 25px; }
+        h1, h2, h3 { margin: 0 0 15px 0; text-align: center; font-weight: 700; letter-spacing: -0.5px; }
+        h1 span { background: linear-gradient(90deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .subtitle { text-align: center; color: var(--text-sec); margin-bottom: 25px; font-size: 0.9rem; }
 
-        /* Inputs */
-        .input-group { margin-bottom: 15px; position: relative; }
+        /* --- INPUTS & BUTTONS --- */
+        .field-group { margin-bottom: 12px; }
         
         input, select {
             width: 100%;
-            padding: 16px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px;
-            color: #fff;
+            color: white;
             font-size: 1rem;
             outline: none;
             transition: 0.3s;
             font-family: inherit;
         }
-        
-        input:focus, select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 242, 255, 0.1);
-            background: rgba(0, 0, 0, 0.6);
-        }
+        input:focus, select:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
+        input[type="date"] { color-scheme: dark; }
 
-        /* Buttons */
         button {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             border: none;
             border-radius: 12px;
-            background: var(--primary);
-            color: #000;
-            font-weight: 700;
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            transition: 0.2s;
             margin-top: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
-
-        button:active { transform: scale(0.96); }
-        button:disabled { opacity: 0.7; cursor: not-allowed; filter: grayscale(0.5); }
         
-        button.secondary {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            text-transform: none;
-        }
-        button.secondary:hover { background: rgba(255,255,255,0.05); }
+        .btn-primary { background: var(--primary); color: #000; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-primary:disabled { opacity: 0.7; cursor: wait; transform: none; }
 
-        /* Error Message Box */
-        .error-box {
-            background: rgba(255, 75, 75, 0.1);
-            border: 1px solid rgba(255, 75, 75, 0.3);
-            color: #ff6b6b;
+        .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+
+        .btn-danger { background: rgba(255, 71, 87, 0.2); color: var(--danger); font-size: 0.8rem; padding: 6px 12px; width: auto; }
+
+        /* --- ALERTS --- */
+        .alert-box {
             padding: 12px;
             border-radius: 10px;
+            margin-top: 15px;
             font-size: 0.85rem;
             text-align: center;
-            margin-top: 15px;
             display: none;
         }
-        .error-box.visible { display: block; animation: shake 0.3s; }
+        .alert-error { background: rgba(255, 71, 87, 0.15); color: #ff6b81; border: 1px solid rgba(255, 71, 87, 0.3); }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        /* Grid Slots */
+        /* --- GRID & LISTS --- */
         .slots-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 15px;
         }
-        .time-slot {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 10px 5px;
+        .slot {
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
             text-align: center;
             font-size: 0.85rem;
             cursor: pointer;
             transition: 0.2s;
         }
-        .time-slot.selected { background: var(--primary); color: #000; border-color: var(--primary); font-weight: bold; }
-        .time-slot.disabled { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
+        .slot.available:hover { border-color: var(--primary); }
+        .slot.selected { background: var(--primary); color: #000; border-color: var(--primary); font-weight: bold; }
+        .slot.disabled { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
 
-        /* List Items */
-        .appt-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 10px;
+        .list-item {
+            background: rgba(255,255,255,0.03);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -172,12 +148,11 @@
         }
 
         .hidden { display: none !important; }
-
-        /* Mobile specific adjustments */
-        @media (max-width: 400px) {
-            .glass-card { padding: 20px; }
+        
+        /* Mobile Fixes */
+        @media(max-width: 400px) {
+            .app-container { padding: 20px; }
             h1 { font-size: 1.5rem; }
-            .slots-grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
 </head>
@@ -186,74 +161,79 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
-    <div class="glass-card">
+    <div class="app-container">
         
-        <div id="auth-screen">
-            <h1>BarberTime</h1>
-            <p>Entre para agendar seu estilo.</p>
+        <section id="screen-auth">
+            <h1>Barber<span>Time</span></h1>
+            <p class="subtitle">Faça login para garantir seu estilo.</p>
             
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Seu E-mail" autocomplete="email">
+            <div class="field-group">
+                <input type="email" id="inp-email" placeholder="E-mail">
             </div>
-            <div class="input-group">
-                <input type="password" id="password" placeholder="Sua Senha (mín. 6 dígitos)" autocomplete="current-password">
+            <div class="field-group">
+                <input type="password" id="inp-pass" placeholder="Senha (mín. 6 dígitos)">
             </div>
-            
-            <button id="btnLogin">Entrar</button>
-            <button id="btnRegister" class="secondary">Criar Nova Conta</button>
-            
-            <div id="auth-error" class="error-box"></div>
-        </div>
 
-        <div id="client-screen" class="hidden">
+            <button id="btn-login" class="btn-primary">ENTRAR</button>
+            <button id="btn-register" class="btn-secondary">CRIAR CONTA</button>
+
+            <div id="auth-alert" class="alert-box alert-error"></div>
+        </section>
+
+        <section id="screen-client" class="hidden">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <span style="font-size: 0.9rem; color:var(--text-muted)">Olá, <b style="color:#fff" id="user-name">User</b></span>
-                <button id="btnLogout" class="secondary" style="width: auto; padding: 8px 12px; margin:0; font-size:0.75rem;">SAIR</button>
+                <span style="font-size:0.9rem; color:var(--text-sec)">Olá, <strong style="color:#fff" id="user-name">...</strong></span>
+                <button id="btn-logout" class="btn-secondary" style="width:auto; padding:8px 16px; margin:0; font-size:0.8rem;">Sair</button>
             </div>
 
-            <div style="background: rgba(0,0,0,0.2); border-radius:16px; padding:20px; margin-bottom:20px;">
-                <h3 style="margin:0 0 15px 0; font-size:1rem; color:var(--primary);">Novo Agendamento</h3>
+            <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:16px;">
+                <h3 style="text-align:left; font-size:1rem; color:var(--primary)">Novo Corte</h3>
                 
-                <select id="service-select">
-                    <option value="Corte Cabelo - R$40">✂️ Corte Cabelo (R$40)</option>
-                    <option value="Barba - R$30">🪒 Barba (R$30)</option>
-                    <option value="Completo - R$60">💎 Completo (R$60)</option>
+                <select id="sel-service">
+                    <option value="Corte Cabelo">✂️ Corte Cabelo (R$40)</option>
+                    <option value="Barba">🪒 Barba (R$30)</option>
+                    <option value="Completo">💎 Cabelo + Barba (R$60)</option>
                 </select>
 
-                <input type="date" id="date-select" style="margin-top:10px;">
+                <input type="date" id="sel-date" style="margin-top:10px;">
 
                 <div id="slots-container" class="slots-grid">
-                    <div style="grid-column: span 3; text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem;">
-                        👆 Selecione uma data acima
+                    <div style="grid-column: span 3; text-align:center; padding:20px; opacity:0.6; font-size:0.8rem;">
+                        Selecione a data acima para ver horários.
                     </div>
                 </div>
 
-                <div id="confirm-section" class="hidden" style="margin-top:20px;">
-                    <button id="btn-confirm-booking">Confirmar Agendamento</button>
+                <button id="btn-confirm" class="btn-primary hidden" style="margin-top:20px;">CONFIRMAR AGENDAMENTO</button>
+            </div>
+
+            <h3 style="text-align:left; font-size:1rem; margin-top:25px;">Meus Horários</h3>
+            <div id="my-list" style="max-height:150px; overflow-y:auto;">
                 </div>
-            </div>
+        </section>
 
-            <h4 style="margin: 0 0 10px 0; font-size:0.9rem; color:var(--text-muted);">Meus Horários</h4>
-            <div id="my-appointments-list" style="max-height: 150px; overflow-y: auto;"></div>
-        </div>
-
-        <div id="admin-screen" class="hidden">
+        <section id="screen-admin" class="hidden">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h2 style="font-size:1.2rem; margin:0;">Admin Painel</h2>
-                <button id="btnLogoutAdmin" class="secondary" style="width: auto; padding: 8px 12px; margin:0; font-size:0.75rem;">SAIR</button>
+                <h2 style="font-size:1.2rem; margin:0;">Painel Admin</h2>
+                <button id="btn-logout-admin" class="btn-secondary" style="width:auto; padding:8px 16px; margin:0; font-size:0.8rem;">Sair</button>
             </div>
-            <p style="text-align:left; margin-bottom:10px;">Agenda Global:</p>
-            <div id="admin-appointments-list" style="max-height: 400px; overflow-y: auto;"></div>
-        </div>
+            
+            <p class="subtitle" style="text-align:left;">Agenda Completa (Tempo Real)</p>
+            <div id="admin-list" style="max-height:400px; overflow-y:auto;">
+                <div style="text-align:center; padding:20px;">Carregando agenda...</div>
+            </div>
+        </section>
 
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, getDocs, onSnapshot, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        // IMPORTANTE: initializeFirestore para corrigir CORS
+        import { 
+            getFirestore, initializeFirestore, collection, addDoc, query, where, getDocs, onSnapshot, orderBy, deleteDoc, doc 
+        } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // SUA CONFIGURAÇÃO
+        // --- CONFIGURAÇÃO ---
         const firebaseConfig = {
             apiKey: "AIzaSyCHR2POfEPFGG-AbajaEsnBk32bvrru5uM",
             authDomain: "dbyd-5201e.firebaseapp.com",
@@ -265,234 +245,228 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        
+        // --- CORREÇÃO DE CONEXÃO (LONG POLLING) ---
+        const db = initializeFirestore(app, {
+            experimentalForceLongPolling: true,
+            useFetchStreams: false
+        });
 
-        // --- UI HELPERS ---
-        const ui = {
-            authScreen: document.getElementById('auth-screen'),
-            clientScreen: document.getElementById('client-screen'),
-            adminScreen: document.getElementById('admin-screen'),
-            email: document.getElementById('email'),
-            pass: document.getElementById('password'),
-            errorBox: document.getElementById('auth-error'),
-            btnLogin: document.getElementById('btnLogin'),
-            btnRegister: document.getElementById('btnRegister')
-        };
-
+        // --- VARIÁVEIS DE ESTADO ---
         let currentUser = null;
         let selectedTime = null;
 
-        // --- TRADUÇÃO DE ERROS (UX MELHORADA) ---
-        function showError(message) {
-            ui.errorBox.innerText = message;
-            ui.errorBox.classList.add('visible');
-            setTimeout(() => ui.errorBox.classList.remove('visible'), 5000);
-        }
+        // --- UI ELEMENTS ---
+        const els = {
+            authScreen: document.getElementById('screen-auth'),
+            clientScreen: document.getElementById('screen-client'),
+            adminScreen: document.getElementById('screen-admin'),
+            email: document.getElementById('inp-email'),
+            pass: document.getElementById('inp-pass'),
+            alert: document.getElementById('auth-alert'),
+            slots: document.getElementById('slots-container'),
+            confirmBtn: document.getElementById('btn-confirm'),
+            adminList: document.getElementById('admin-list'),
+            clientList: document.getElementById('my-list')
+        };
 
-        function translateFirebaseError(errorCode) {
-            switch(errorCode) {
-                case 'auth/weak-password': return 'A senha deve ter pelo menos 6 caracteres.';
-                case 'auth/email-already-in-use': return 'Este e-mail já está cadastrado.';
-                case 'auth/invalid-email': return 'Formato de e-mail inválido.';
-                case 'auth/wrong-password': return 'Senha incorreta.';
-                case 'auth/user-not-found': return 'Usuário não encontrado.';
-                case 'auth/internal-error': return 'Erro interno do servidor. Tente novamente.';
-                default: return `Erro desconhecido: ${errorCode}`;
-            }
-        }
+        // --- HELPERS ---
+        const showAlert = (msg) => {
+            els.alert.innerText = msg;
+            els.alert.style.display = 'block';
+            setTimeout(() => els.alert.style.display = 'none', 5000);
+        };
 
-        function setLoading(btn, isLoading, textDefault) {
-            if(isLoading) {
-                btn.disabled = true;
-                btn.innerText = "Processando...";
-            } else {
-                btn.disabled = false;
-                btn.innerText = textDefault;
-            }
-        }
+        const translateError = (code) => {
+            const errors = {
+                'auth/invalid-email': 'E-mail inválido.',
+                'auth/user-not-found': 'Usuário não encontrado.',
+                'auth/wrong-password': 'Senha incorreta.',
+                'auth/email-already-in-use': 'E-mail já cadastrado.',
+                'auth/weak-password': 'Senha muito fraca (mín. 6 dígitos).',
+                'auth/internal-error': 'Erro interno. Verifique o console.'
+            };
+            return errors[code] || `Erro: ${code}`;
+        };
 
-        // --- AUTENTICAÇÃO ---
-        
+        const setLoading = (btnId, loading, text) => {
+            const btn = document.getElementById(btnId);
+            btn.disabled = loading;
+            btn.innerText = loading ? '...' : text;
+        };
+
+        // --- 1. AUTHENTICATION ---
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
-                ui.authScreen.classList.add('hidden');
-                ui.errorBox.classList.remove('visible'); // Limpa erros antigos
-                if(user.email === 'admin@barber.com') {
-                    showAdminDashboard();
+                els.authScreen.classList.add('hidden');
+                if (user.email === 'admin@barber.com') {
+                    els.adminScreen.classList.remove('hidden');
+                    loadAdminData();
                 } else {
-                    showClientDashboard(user);
+                    els.clientScreen.classList.remove('hidden');
+                    document.getElementById('user-name').innerText = user.email.split('@')[0];
+                    loadClientData(user.uid);
                 }
             } else {
-                ui.authScreen.classList.remove('hidden');
-                ui.clientScreen.classList.add('hidden');
-                ui.adminScreen.classList.add('hidden');
+                els.authScreen.classList.remove('hidden');
+                els.clientScreen.classList.add('hidden');
+                els.adminScreen.classList.add('hidden');
             }
         });
 
-        ui.btnLogin.addEventListener('click', async () => {
-            setLoading(ui.btnLogin, true, "Entrar");
+        document.getElementById('btn-login').addEventListener('click', async () => {
+            setLoading('btn-login', true);
             try {
-                await signInWithEmailAndPassword(auth, ui.email.value, ui.pass.value);
-            } catch (error) {
-                showError(translateFirebaseError(error.code));
+                await signInWithEmailAndPassword(auth, els.email.value, els.pass.value);
+            } catch (e) {
+                showAlert(translateError(e.code));
             } finally {
-                setLoading(ui.btnLogin, false, "Entrar");
+                setLoading('btn-login', false, 'ENTRAR');
             }
         });
 
-        ui.btnRegister.addEventListener('click', async () => {
-            const email = ui.email.value;
-            const pass = ui.pass.value;
-
-            // Validação local rápida
-            if(pass.length < 6) {
-                showError("A senha precisa ter no mínimo 6 dígitos!");
-                return;
-            }
-
-            setLoading(ui.btnRegister, true, "Criar Nova Conta");
+        document.getElementById('btn-register').addEventListener('click', async () => {
+            if (els.pass.value.length < 6) return showAlert("A senha deve ter 6+ dígitos.");
+            setLoading('btn-register', true);
             try {
-                await createUserWithEmailAndPassword(auth, email, pass);
-            } catch (error) {
-                console.error(error); // Para debug
-                showError(translateFirebaseError(error.code));
+                await createUserWithEmailAndPassword(auth, els.email.value, els.pass.value);
+            } catch (e) {
+                showAlert(translateError(e.code));
             } finally {
-                setLoading(ui.btnRegister, false, "Criar Nova Conta");
+                setLoading('btn-register', false, 'CRIAR CONTA');
             }
         });
 
-        const logout = () => signOut(auth).then(() => window.location.reload());
-        document.getElementById('btnLogout').addEventListener('click', logout);
-        document.getElementById('btnLogoutAdmin').addEventListener('click', logout);
+        const logout = () => signOut(auth).then(() => location.reload());
+        document.getElementById('btn-logout').addEventListener('click', logout);
+        document.getElementById('btn-logout-admin').addEventListener('click', logout);
 
-        // --- LÓGICA DO CLIENTE ---
+        // --- 2. LÓGICA DO CLIENTE ---
+        
+        // Define data mínima como HOJE
+        const dateInput = document.getElementById('sel-date');
+        dateInput.min = new Date().toISOString().split("T")[0];
 
-        function showClientDashboard(user) {
-            ui.clientScreen.classList.remove('hidden');
-            document.getElementById('user-name').innerText = user.email.split('@')[0];
-            loadMyAppointments(user.uid);
-        }
-
-        document.getElementById('date-select').addEventListener('change', async (e) => {
-            if(!e.target.value) return;
-            loadTimeSlots(e.target.value);
-        });
-
-        async function loadTimeSlots(date) {
-            const container = document.getElementById('slots-container');
-            container.innerHTML = "<div style='grid-column:span 3; text-align:center; font-size:0.8rem;'>Carregando horários...</div>";
+        dateInput.addEventListener('change', async (e) => {
+            const date = e.target.value;
+            if (!date) return;
+            
+            els.slots.innerHTML = '<div style="grid-column:span 3; text-align:center">Buscando horários...</div>';
+            els.confirmBtn.classList.add('hidden');
+            selectedTime = null;
 
             try {
+                // Busca horários já ocupados
                 const q = query(collection(db, "appointments"), where("date", "==", date));
-                const snapshot = await getDocs(q);
-                const takenTimes = snapshot.docs.map(doc => doc.data().time);
+                const snap = await getDocs(q);
+                const taken = snap.docs.map(d => d.data().time);
 
-                container.innerHTML = ""; // Limpar
-
-                for (let i = 9; i < 19; i++) { // 09:00 as 19:00
-                    ['00', '30'].forEach(min => {
-                        const time = `${i < 10 ? '0'+i : i}:${min}`;
+                els.slots.innerHTML = '';
+                
+                // Gera horários das 09:00 as 19:00
+                for (let h = 9; h < 19; h++) {
+                    ['00', '30'].forEach(m => {
+                        const time = `${h < 10 ? '0'+h : h}:${m}`;
                         const div = document.createElement('div');
-                        div.className = 'time-slot';
+                        div.className = 'slot';
                         div.innerText = time;
-
-                        if (takenTimes.includes(time)) {
+                        
+                        if (taken.includes(time)) {
                             div.classList.add('disabled');
                         } else {
+                            div.classList.add('available');
                             div.onclick = () => {
-                                document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+                                document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
                                 div.classList.add('selected');
                                 selectedTime = time;
-                                document.getElementById('confirm-section').classList.remove('hidden');
+                                els.confirmBtn.classList.remove('hidden');
                             };
                         }
-                        container.appendChild(div);
+                        els.slots.appendChild(div);
                     });
                 }
             } catch (err) {
-                container.innerHTML = "<p style='color:red; font-size:0.8rem;'>Erro ao carregar agenda.</p>";
+                els.slots.innerHTML = '<div style="color:#ff6b81; grid-column:span 3; text-align:center">Erro de Conexão com o Banco.</div>';
+                console.error(err);
             }
-        }
+        });
 
-        document.getElementById('btn-confirm-booking').addEventListener('click', async function() {
-            if(!selectedTime) return;
-            const btn = this;
-            btn.disabled = true; 
-            btn.innerText = "Agendando...";
+        els.confirmBtn.addEventListener('click', async () => {
+            if (!selectedTime) return;
+            const btn = els.confirmBtn;
+            btn.disabled = true; btn.innerText = "AGENDANDO...";
 
             try {
                 await addDoc(collection(db, "appointments"), {
                     userId: currentUser.uid,
                     userEmail: currentUser.email,
-                    service: document.getElementById('service-select').value,
-                    date: document.getElementById('date-select').value,
+                    service: document.getElementById('sel-service').value,
+                    date: dateInput.value,
                     time: selectedTime,
                     createdAt: new Date()
                 });
-                alert("Agendamento realizado!");
-                window.location.reload();
-            } catch (err) {
-                alert("Erro: " + err.message);
-                btn.disabled = false;
-                btn.innerText = "Confirmar Agendamento";
+                alert("Agendamento Confirmado! ✂️");
+                location.reload();
+            } catch (e) {
+                alert("Erro: " + e.message);
+                btn.disabled = false; btn.innerText = "CONFIRMAR AGENDAMENTO";
             }
         });
 
-        function loadMyAppointments(uid) {
-            const list = document.getElementById('my-appointments-list');
+        function loadClientData(uid) {
             const q = query(collection(db, "appointments"), where("userId", "==", uid), orderBy("date"), orderBy("time"));
-
-            onSnapshot(q, (snapshot) => {
-                list.innerHTML = "";
-                if(snapshot.empty) {
-                    list.innerHTML = "<p style='font-size:0.8rem; opacity:0.6'>Nenhum agendamento.</p>";
-                    return;
-                }
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const el = document.createElement('div');
-                    el.className = 'appt-item';
-                    el.innerHTML = `
+            onSnapshot(q, (snap) => {
+                els.clientList.innerHTML = '';
+                if (snap.empty) els.clientList.innerHTML = '<p style="text-align:center; font-size:0.8rem; opacity:0.5">Sem agendamentos.</p>';
+                
+                snap.forEach(d => {
+                    const data = d.data();
+                    const item = document.createElement('div');
+                    item.className = 'list-item';
+                    item.innerHTML = `
                         <div>
-                            <div style="font-weight:600; font-size:0.9rem;">${data.date} - ${data.time}</div>
-                            <div style="font-size:0.8rem; opacity:0.7">${data.service}</div>
+                            <strong>${data.date.split('-').reverse().join('/')} - ${data.time}</strong><br>
+                            <small>${data.service}</small>
                         </div>
-                        <button onclick="window.cancel('${docSnap.id}')" style="width:auto; padding:5px 10px; font-size:0.7rem; background:rgba(255,255,255,0.1); margin:0;">✖</button>
+                        <button class="btn-danger" onclick="window.delItem('${d.id}')">X</button>
                     `;
-                    list.appendChild(el);
+                    els.clientList.appendChild(item);
                 });
             });
         }
 
-        window.cancel = async (id) => {
-            if(confirm("Cancelar este horário?")) await deleteDoc(doc(db, "appointments", id));
+        // --- 3. LÓGICA DO ADMIN ---
+        function loadAdminData() {
+            const q = query(collection(db, "appointments"), orderBy("date"), orderBy("time"));
+            onSnapshot(q, (snap) => {
+                els.adminList.innerHTML = '';
+                if (snap.empty) els.adminList.innerHTML = '<p style="text-align:center">Agenda vazia.</p>';
+
+                snap.forEach(d => {
+                    const data = d.data();
+                    const item = document.createElement('div');
+                    item.className = 'list-item';
+                    item.innerHTML = `
+                        <div>
+                            <strong style="color:var(--primary)">${data.time}</strong> - ${data.date.split('-').reverse().join('/')}<br>
+                            <span>${data.userEmail}</span><br>
+                            <small style="opacity:0.7">${data.service}</small>
+                        </div>
+                        <button class="btn-danger" onclick="window.delItem('${d.id}')">Cancelar</button>
+                    `;
+                    els.adminList.appendChild(item);
+                });
+            });
+        }
+
+        // Função Global para deletar (acessível no HTML)
+        window.delItem = async (id) => {
+            if (confirm("Deseja cancelar este agendamento?")) {
+                await deleteDoc(doc(db, "appointments", id));
+            }
         };
 
-        // --- LÓGICA ADMIN ---
-        function showAdminDashboard() {
-            ui.adminScreen.classList.remove('hidden');
-            const list = document.getElementById('admin-appointments-list');
-            const q = query(collection(db, "appointments"), orderBy("date"), orderBy("time"));
-
-            onSnapshot(q, (snapshot) => {
-                list.innerHTML = "";
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const el = document.createElement('div');
-                    el.className = 'appt-item';
-                    el.innerHTML = `
-                        <div>
-                            <div style="font-weight:600; color:var(--primary); font-size:0.9rem;">${data.time} - ${data.date}</div>
-                            <div style="font-size:0.8rem;">${data.userEmail}</div>
-                            <div style="font-size:0.75rem; opacity:0.6">${data.service}</div>
-                        </div>
-                        <button onclick="window.cancel('${docSnap.id}')" style="width:auto; padding:5px 10px; background:var(--danger); margin:0; font-size:0.7rem;">Cancelar</button>
-                    `;
-                    list.appendChild(el);
-                });
-            });
-        }
     </script>
 </body>
 </html>
