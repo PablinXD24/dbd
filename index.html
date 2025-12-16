@@ -3,193 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BarberTime - Agendamento</title>
+    <title>BarberTime | Glass Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS: Estilo Dark/Gold --- */
         :root {
-            --bg-color: #1a1a1a;
-            --card-color: #2c2c2c;
-            --text-color: #f5f5f5;
-            --accent-color: #d4af37; /* Dourado */
-            --danger-color: #e74c3c;
-            --success-color: #2ecc71;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --accent-color: #00d2ff; /* Ciano Neon */
+            --accent-gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            --text-color: #ffffff;
+            --danger-color: #ff4b4b;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f0c29;
+            background-image: linear-gradient(315deg, #0f0c29 0%, #302b63 74%, #24243e 100%);
+            color: var(--text-color);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
         }
 
-        .container {
+        /* --- BACKGROUND BLOBS (O Segredo do Glassmorphism) --- */
+        .background-blobs {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        .blob-1 {
+            top: -10%; left: -10%; width: 500px; height: 500px;
+            background: #ff00cc;
+        }
+        .blob-2 {
+            bottom: -10%; right: -10%; width: 400px; height: 400px;
+            background: #333399;
+            animation-delay: -5s;
+        }
+        .blob-3 {
+            top: 40%; left: 40%; width: 300px; height: 300px;
+            background: #00d2ff;
+            opacity: 0.4;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 50px); }
+        }
+
+        /* --- GLASS CONTAINER --- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 20px;
+            padding: 40px;
             width: 100%;
-            max-width: 500px;
-        }
-
-        h1, h2, h3 { color: var(--accent-color); text-align: center; }
-
-        /* Utilitários de Visibilidade */
-        .hidden { display: none !important; }
-
-        /* Inputs e Botões */
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 5px;
-            border: none;
-            box-sizing: border-box;
-        }
-
-        input, select { background: #333; color: white; border: 1px solid #444; }
-        
-        button {
-            background-color: var(--accent-color);
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
+            max-width: 480px;
+            margin: 20px;
             transition: 0.3s;
         }
 
-        button:hover { filter: brightness(1.1); }
-        button.secondary { background-color: #444; color: #fff; }
-        button.danger { background-color: var(--danger-color); color: #fff; }
+        h1, h2, h3 { margin-top: 0; text-align: center; font-weight: 600; letter-spacing: 1px;}
+        h1 { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Grid de Horários */
+        /* --- INPUTS & BUTTONS --- */
+        input, select {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--accent-color);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Muda a cor do ícone de calendário para branco */
+        input[type="date"] { color-scheme: dark; }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 50px; /* Botão Pill */
+            background: var(--accent-gradient);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+            transition: transform 0.2s;
+        }
+
+        button:active { transform: scale(0.98); }
+        button.secondary { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); box-shadow: none; }
+        button.danger { background: var(--danger-color); box-shadow: 0 4px 15px rgba(255, 75, 75, 0.3); }
+
+        /* --- GRID DE HORÁRIOS --- */
         .slots-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .time-slot {
-            background-color: var(--card-color);
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
             text-align: center;
             cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
         }
 
+        .time-slot:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255,255,255,0.3); }
+        
         .time-slot.selected {
-            background-color: var(--accent-color);
-            color: #000;
+            background: var(--accent-gradient);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
         }
 
         .time-slot.disabled {
-            background-color: #333;
-            color: #555;
-            border-color: #444;
+            opacity: 0.3;
             cursor: not-allowed;
             text-decoration: line-through;
+            background: transparent;
         }
 
-        /* Lista de Agendamentos (Card) */
+        /* --- CARDS DE LISTA --- */
         .appointment-card {
-            background: var(--card-color);
-            padding: 15px;
-            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.2);
             border-left: 4px solid var(--accent-color);
-            border-radius: 4px;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .label { font-size: 0.85rem; color: #aaa; margin-left: 5px; }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="glass-card">
+        
         <div id="auth-screen">
-            <h1>BarberTime ✂️</h1>
-            <p style="text-align:center">Acesse para agendar seu corte</p>
-            <input type="email" id="email" placeholder="Seu Email">
-            <input type="password" id="password" placeholder="Sua Senha">
-            <button id="btnLogin">Entrar</button>
-            <button id="btnRegister" class="secondary">Criar Conta</button>
-            <p id="auth-error" style="color:var(--danger-color); text-align:center;"></p>
+            <h1>BarberTime</h1>
+            <p class="text-center" style="opacity: 0.8">Agendamento Exclusivo</p>
+            
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Senha">
+            
+            <button id="btnLogin">ENTRAR</button>
+            <button id="btnRegister" class="secondary">CRIAR CONTA</button>
+            
+            <p id="auth-error" class="text-center" style="color:var(--danger-color); margin-top:10px;"></p>
         </div>
 
         <div id="client-screen" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>Olá, <span id="user-name">Cliente</span></h3>
-                <button id="btnLogout" class="secondary" style="width:auto; padding:5px 10px;">Sair</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <span style="font-size: 1.2rem;">Olá, <b id="user-name">...</b> 👋</span>
+                <button id="btnLogout" class="secondary" style="width:auto; padding: 8px 15px; margin:0; font-size:0.8rem">Sair</button>
             </div>
             
-            <hr style="border-color:#333">
-
             <div id="booking-section">
-                <h2>Novo Agendamento</h2>
-                
-                <label>1. Escolha o Serviço:</label>
-                <select id="service-select">
-                    <option value="Corte Cabelo - R$40">Corte Cabelo (R$40)</option>
-                    <option value="Barba - R$30">Barba (R$30)</option>
-                    <option value="Completo - R$60">Cabelo + Barba (R$60)</option>
-                </select>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px;">
+                    <h3 style="text-align: left; font-size: 1rem; margin-bottom: 15px;">Novo Corte</h3>
+                    
+                    <span class="label">Serviço</span>
+                    <select id="service-select">
+                        <option value="Corte Cabelo - R$40">✂️ Corte Cabelo (R$40)</option>
+                        <option value="Barba - R$30">🪒 Barba (R$30)</option>
+                        <option value="Completo - R$60">💎 Cabelo + Barba (R$60)</option>
+                    </select>
 
-                <label>2. Escolha a Data:</label>
-                <input type="date" id="date-select">
+                    <span class="label">Data Desejada</span>
+                    <input type="date" id="date-select">
 
-                <label>3. Escolha o Horário:</label>
-                <div id="slots-container" class="slots-grid">
-                    <p style="grid-column: span 3; text-align:center; color:#777;">Selecione uma data para ver horários.</p>
-                </div>
+                    <div id="slots-container" class="slots-grid">
+                        <p style="grid-column: span 3; text-align:center; opacity:0.5; font-size:0.9rem;">Selecione a data acima.</p>
+                    </div>
 
-                <div id="confirm-section" class="hidden" style="margin-top:20px;">
-                    <p>Resumo: <strong id="summary-text"></strong></p>
-                    <button id="btn-confirm-booking">CONFIRMAR AGENDAMENTO</button>
+                    <div id="confirm-section" class="hidden" style="margin-top:15px; text-align: center;">
+                        <p style="font-size: 0.9rem;">Agendar para: <br><strong id="summary-text" style="color: var(--accent-color)"></strong>?</p>
+                        <button id="btn-confirm-booking">CONFIRMAR</button>
+                    </div>
                 </div>
             </div>
 
-            <hr style="border-color:#333; margin: 30px 0;">
-
-            <h3>Meus Agendamentos</h3>
-            <div id="my-appointments-list">
+            <h3 style="text-align: left; margin-top: 30px; font-size: 1rem;">Meus Agendamentos</h3>
+            <div id="my-appointments-list" style="max-height: 200px; overflow-y: auto; padding-right:5px;">
                 </div>
         </div>
 
         <div id="admin-screen" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>Painel do Barbeiro 🛡️</h3>
-                <button id="btnLogoutAdmin" class="secondary" style="width:auto;">Sair</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <h3 style="margin:0">Admin Panel 🛡️</h3>
+                <button id="btnLogoutAdmin" class="secondary" style="width:auto; padding: 8px 15px; margin:0; font-size:0.8rem">Sair</button>
             </div>
-            <p>Visualizando agenda completa em tempo real.</p>
             
-            <div id="admin-appointments-list">
-                </div>
+            <div id="admin-appointments-list" style="max-height: 500px; overflow-y: auto;">
+                <p class="text-center">Carregando agenda...</p>
+            </div>
         </div>
+
     </div>
 
     <script type="module">
-        // Importações do Firebase v9
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            onAuthStateChanged, 
-            signOut 
-        } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { 
-            getFirestore, 
-            collection, 
-            addDoc, 
-            query, 
-            where, 
-            getDocs, 
-            onSnapshot,
-            orderBy,
-            deleteDoc,
-            doc
-        } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, onSnapshot, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // CONFIGURAÇÃO (Sua Config)
         const firebaseConfig = {
             apiKey: "AIzaSyCHR2POfEPFGG-AbajaEsnBk32bvrru5uM",
             authDomain: "dbyd-5201e.firebaseapp.com",
@@ -199,31 +261,24 @@
             appId: "1:376910752424:web:d64d958c177bdd01e3f09d"
         };
 
-        // Inicialização
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- ESTADO GLOBAL ---
         let currentUser = null;
         let selectedTime = null;
 
-        // --- DOM ELEMENTS ---
         const authScreen = document.getElementById('auth-screen');
         const clientScreen = document.getElementById('client-screen');
         const adminScreen = document.getElementById('admin-screen');
-        
         const emailInput = document.getElementById('email');
         const passInput = document.getElementById('password');
         const errorMsg = document.getElementById('auth-error');
-
-        // --- 1. AUTENTICAÇÃO ---
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
                 authScreen.classList.add('hidden');
-                // Lógica Simples de Admin: Se o email for admin@barber.com
                 if(user.email === 'admin@barber.com') {
                     showAdminDashboard();
                 } else {
@@ -250,15 +305,12 @@
         document.getElementById('btnLogout').addEventListener('click', logout);
         document.getElementById('btnLogoutAdmin').addEventListener('click', logout);
 
-        // --- 2. LÓGICA DO CLIENTE ---
-
         function showClientDashboard(user) {
             clientScreen.classList.remove('hidden');
             document.getElementById('user-name').innerText = user.email.split('@')[0];
             loadMyAppointments(user.uid);
         }
 
-        // Listener para Data selecionada
         const dateInput = document.getElementById('date-select');
         dateInput.addEventListener('change', async (e) => {
             const date = e.target.value;
@@ -266,12 +318,10 @@
             loadTimeSlots(date);
         });
 
-        // Função principal: Gerar Horários e checar disponibilidade
         async function loadTimeSlots(date) {
             const container = document.getElementById('slots-container');
-            container.innerHTML = "Carregando...";
+            container.innerHTML = "<p style='grid-column:span 3; text-align:center'>Verificando agenda...</p>";
 
-            // 1. Buscar agendamentos existentes no banco para essa data
             const q = query(collection(db, "appointments"), where("date", "==", date));
             const querySnapshot = await getDocs(q);
             const takenTimes = [];
@@ -279,55 +329,40 @@
                 takenTimes.push(doc.data().time);
             });
 
-            // 2. Gerar slots (Ex: 09:00 as 18:00)
             const openHour = 9;
             const closeHour = 18;
-            container.innerHTML = ""; // Limpar
+            container.innerHTML = "";
 
             for (let i = openHour; i < closeHour; i++) {
-                // Hora cheia e meia hora
                 const times = [`${i}:00`, `${i}:30`];
-                
                 times.forEach(time => {
-                    // Formatar hora (ex: 9:00 -> 09:00)
                     const formattedTime = time.length === 4 ? '0' + time : time;
-                    
                     const btn = document.createElement('div');
                     btn.innerText = formattedTime;
                     btn.classList.add('time-slot');
 
-                    // Verificar se já está ocupado
                     if(takenTimes.includes(formattedTime)) {
                         btn.classList.add('disabled');
-                        btn.title = "Horário ocupado";
                     } else {
                         btn.onclick = () => selectSlot(formattedTime, btn);
                     }
-
                     container.appendChild(btn);
                 });
             }
         }
 
         function selectSlot(time, element) {
-            // UI: Remover seleção anterior
             document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
-            
             selectedTime = time;
-            
-            // Mostrar botão de confirmação
             const service = document.getElementById('service-select').value;
             const date = document.getElementById('date-select').value;
-            
-            document.getElementById('summary-text').innerText = `${service} em ${date} às ${time}`;
+            document.getElementById('summary-text').innerText = `${service} \n ${date} às ${time}`;
             document.getElementById('confirm-section').classList.remove('hidden');
         }
 
-        // Salvar no Banco
         document.getElementById('btn-confirm-booking').addEventListener('click', async () => {
             if(!selectedTime) return;
-            
             const service = document.getElementById('service-select').value;
             const date = document.getElementById('date-select').value;
 
@@ -340,32 +375,23 @@
                     time: selectedTime,
                     createdAt: new Date()
                 });
-                
-                alert("Agendamento confirmado com sucesso!");
-                window.location.reload(); // Recarrega para limpar
+                alert("Agendado com sucesso!");
+                window.location.reload();
             } catch (e) {
-                alert("Erro ao agendar: " + e.message);
+                alert("Erro: " + e.message);
             }
         });
 
-        // Carregar Meus Agendamentos
         function loadMyAppointments(uid) {
             const list = document.getElementById('my-appointments-list');
-            const q = query(
-                collection(db, "appointments"), 
-                where("userId", "==", uid),
-                orderBy("date"), 
-                orderBy("time")
-            );
+            const q = query(collection(db, "appointments"), where("userId", "==", uid), orderBy("date"), orderBy("time"));
 
-            // Ouvinte em tempo real para o cliente também
             onSnapshot(q, (snapshot) => {
                 list.innerHTML = "";
                 if(snapshot.empty) {
-                    list.innerHTML = "<p>Nenhum agendamento futuro.</p>";
+                    list.innerHTML = "<p style='text-align:center; opacity:0.6'>Sem agendamentos.</p>";
                     return;
                 }
-
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
                     const item = document.createElement('div');
@@ -375,27 +401,22 @@
                             <strong>${data.date} às ${data.time}</strong><br>
                             <small>${data.service}</small>
                         </div>
-                        <button class="danger" style="width:auto; padding:5px 10px; font-size:12px;" onclick="cancelAppt('${docSnap.id}')">X</button>
+                        <button class="danger" style="width:auto; padding:5px 12px; margin-top:0" onclick="cancelAppt('${docSnap.id}')">X</button>
                     `;
                     list.appendChild(item);
                 });
             });
         }
 
-        // Função Global para cancelar (precisa estar no window para o HTML acessar)
         window.cancelAppt = async (id) => {
-            if(confirm("Deseja cancelar este agendamento?")) {
+            if(confirm("Cancelar agendamento?")) {
                 await deleteDoc(doc(db, "appointments", id));
             }
         };
 
-        // --- 3. LÓGICA DO ADMIN ---
-
         function showAdminDashboard() {
             adminScreen.classList.remove('hidden');
             const list = document.getElementById('admin-appointments-list');
-            
-            // Query simples: Pega tudo ordenado por data
             const q = query(collection(db, "appointments"), orderBy("date"), orderBy("time"));
 
             onSnapshot(q, (snapshot) => {
@@ -407,16 +428,15 @@
                     item.innerHTML = `
                         <div>
                             <strong>${data.date} - ${data.time}</strong><br>
-                            <span style="color:#aaa">${data.userEmail}</span><br>
+                            <span style="opacity:0.7; font-size:0.9em">${data.userEmail}</span><br>
                             <small style="color:var(--accent-color)">${data.service}</small>
                         </div>
-                        <button class="danger" style="width:auto;" onclick="cancelAppt('${docSnap.id}')">Cancelar</button>
+                        <button class="danger" style="width:auto; margin:0;" onclick="cancelAppt('${docSnap.id}')">X</button>
                     `;
                     list.appendChild(item);
                 });
             });
         }
-
     </script>
 </body>
 </html>
