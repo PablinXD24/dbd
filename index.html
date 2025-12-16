@@ -1,283 +1,422 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precision Barbers | Minimal</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>BarberTime - Agendamento</title>
+    <style>
+        /* --- CSS: Estilo Dark/Gold --- */
+        :root {
+            --bg-color: #1a1a1a;
+            --card-color: #2c2c2c;
+            --text-color: #f5f5f5;
+            --accent-color: #d4af37; /* Dourado */
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1, h2, h3 { color: var(--accent-color); text-align: center; }
+
+        /* Utilitários de Visibilidade */
+        .hidden { display: none !important; }
+
+        /* Inputs e Botões */
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        input, select { background: #333; color: white; border: 1px solid #444; }
+        
+        button {
+            background-color: var(--accent-color);
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { filter: brightness(1.1); }
+        button.secondary { background-color: #444; color: #fff; }
+        button.danger { background-color: var(--danger-color); color: #fff; }
+
+        /* Grid de Horários */
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .time-slot {
+            background-color: var(--card-color);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .time-slot.selected {
+            background-color: var(--accent-color);
+            color: #000;
+        }
+
+        .time-slot.disabled {
+            background-color: #333;
+            color: #555;
+            border-color: #444;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* Lista de Agendamentos (Card) */
+        .appointment-card {
+            background: var(--card-color);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent-color);
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-    <div class="liquid-background">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
 
-    <nav class="navbar glass">
-        <div class="container nav-content">
-            <div class="logo">
-                <i class="fas fa-cut"></i>
-                <span>PRECISION</span>
+    <div class="container">
+        <div id="auth-screen">
+            <h1>BarberTime ✂️</h1>
+            <p style="text-align:center">Acesse para agendar seu corte</p>
+            <input type="email" id="email" placeholder="Seu Email">
+            <input type="password" id="password" placeholder="Sua Senha">
+            <button id="btnLogin">Entrar</button>
+            <button id="btnRegister" class="secondary">Criar Conta</button>
+            <p id="auth-error" style="color:var(--danger-color); text-align:center;"></p>
+        </div>
+
+        <div id="client-screen" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>Olá, <span id="user-name">Cliente</span></h3>
+                <button id="btnLogout" class="secondary" style="width:auto; padding:5px 10px;">Sair</button>
             </div>
             
-            <div class="nav-links">
-                <a href="#" data-page="home" class="active">Início</a>
-                <a href="#" data-page="agendar">Agendar</a>
-                <a href="#" data-page="meus-agendamentos">Meus Horários</a>
-                <a href="#" data-page="admin" class="admin-link hidden">
-                    <i class="fas fa-lock"></i> Gestão
-                </a>
-            </div>
+            <hr style="border-color:#333">
 
-            <div class="user-actions">
-                <button id="login-btn" class="btn-primary">Entrar</button>
-                <div id="user-menu" class="hidden">
-                    <span id="user-name-display">Cliente</span>
-                    <button id="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+            <div id="booking-section">
+                <h2>Novo Agendamento</h2>
+                
+                <label>1. Escolha o Serviço:</label>
+                <select id="service-select">
+                    <option value="Corte Cabelo - R$40">Corte Cabelo (R$40)</option>
+                    <option value="Barba - R$30">Barba (R$30)</option>
+                    <option value="Completo - R$60">Cabelo + Barba (R$60)</option>
+                </select>
+
+                <label>2. Escolha a Data:</label>
+                <input type="date" id="date-select">
+
+                <label>3. Escolha o Horário:</label>
+                <div id="slots-container" class="slots-grid">
+                    <p style="grid-column: span 3; text-align:center; color:#777;">Selecione uma data para ver horários.</p>
+                </div>
+
+                <div id="confirm-section" class="hidden" style="margin-top:20px;">
+                    <p>Resumo: <strong id="summary-text"></strong></p>
+                    <button id="btn-confirm-booking">CONFIRMAR AGENDAMENTO</button>
                 </div>
             </div>
+
+            <hr style="border-color:#333; margin: 30px 0;">
+
+            <h3>Meus Agendamentos</h3>
+            <div id="my-appointments-list">
+                </div>
         </div>
-    </nav>
 
-    <main>
-        <section id="home-page" class="page active">
-            <div class="container hero">
-                <div class="hero-content">
-                    <h1>Estilo sem <span class="highlight">caos.</span></h1>
-                    <p>Agendamento simplificado para homens que valorizam seu tempo.</p>
-                    <div class="hero-buttons">
-                        <button class="btn-primary big" onclick="navigateTo('agendar')">
-                            Agendar Corte <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="hero-card glass">
-                    <div class="stat">
-                        <strong id="barber-count">0</strong>
-                        <span>Profissionais Disponíveis</span>
-                    </div>
-                    <div class="stat">
-                        <strong>4.9</strong>
-                        <span>Avaliação Média</span>
-                    </div>
-                </div>
+        <div id="admin-screen" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>Painel do Barbeiro 🛡️</h3>
+                <button id="btnLogoutAdmin" class="secondary" style="width:auto;">Sair</button>
             </div>
+            <p>Visualizando agenda completa em tempo real.</p>
             
-            <div class="container services-preview">
-                <h2>Nossos Serviços</h2>
-                <div id="services-list" class="grid-simple"></div>
-            </div>
-        </section>
-
-        <section id="agendar-page" class="page">
-            <div class="container">
-                <div class="wizard-container glass">
-                    <div class="wizard-header">
-                        <h2 id="wizard-title">Selecione o Serviço</h2>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-fill"></div>
-                        </div>
-                    </div>
-
-                    <div id="step-1" class="step active">
-                        <div id="booking-services" class="grid-selection"></div>
-                    </div>
-
-                    <div id="step-2" class="step">
-                        <div class="step-top">
-                            <button class="btn-text prev-step" data-prev="1">Voltar</button>
-                            <h3>Escolha o Profissional</h3>
-                        </div>
-                        <div id="booking-barbers" class="grid-selection"></div>
-                    </div>
-
-                    <div id="step-3" class="step">
-                        <div class="step-top">
-                            <button class="btn-text prev-step" data-prev="2">Voltar</button>
-                            <h3>Data e Horário</h3>
-                        </div>
-                        <div class="datetime-wrapper">
-                            <div class="calendar-simple">
-                                <div class="cal-header">
-                                    <button id="prev-month">&lt;</button>
-                                    <span id="current-month-display">Mês</span>
-                                    <button id="next-month">&gt;</button>
-                                </div>
-                                <div id="calendar-grid" class="cal-grid"></div>
-                            </div>
-                            <div class="time-simple">
-                                <p>Horários para <b id="selected-date-text">...</b></p>
-                                <div id="time-slots" class="slots-grid"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="step-4" class="step">
-                        <div class="step-top">
-                            <button class="btn-text prev-step" data-prev="3">Voltar</button>
-                            <h3>Confirmar</h3>
-                        </div>
-                        <div class="summary-box">
-                            <div class="summary-row">
-                                <span>Serviço</span>
-                                <strong id="sum-service">-</strong>
-                            </div>
-                            <div class="summary-row">
-                                <span>Profissional</span>
-                                <strong id="sum-barber">-</strong>
-                            </div>
-                            <div class="summary-row">
-                                <span>Quando</span>
-                                <strong id="sum-date">-</strong>
-                            </div>
-                            <div class="summary-total">
-                                <span>Total</span>
-                                <strong id="sum-price">R$ 0,00</strong>
-                            </div>
-                            <button id="confirm-booking-btn" class="btn-primary full">Confirmar Agendamento</button>
-                        </div>
-                    </div>
+            <div id="admin-appointments-list">
                 </div>
-            </div>
-        </section>
-
-        <section id="meus-agendamentos-page" class="page">
-            <div class="container">
-                <h2>Meus Agendamentos</h2>
-                <div class="glass appointments-box">
-                    <div id="user-appointments-list" class="list-clean">
-                        <p class="empty-msg">Carregando...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="admin-page" class="page">
-            <div class="container-fluid"> <div class="admin-layout">
-                    <div class="admin-sidebar glass">
-                        <div class="admin-profile">
-                            <div class="avatar">A</div>
-                            <span>Super Admin</span>
-                        </div>
-                        <button class="admin-nav active" data-tab="dash">Dashboard</button>
-                        <button class="admin-nav" data-tab="agendamentos">Agendamentos</button>
-                        <button class="admin-nav" data-tab="servicos">Serviços</button>
-                        <button class="admin-nav" data-tab="barbeiros">Profissionais</button>
-                    </div>
-
-                    <div class="admin-content glass">
-                        <div id="admin-dash" class="admin-view active">
-                            <h3>Visão Geral</h3>
-                            <div class="kpi-grid">
-                                <div class="kpi-card">
-                                    <span>Hoje</span>
-                                    <strong id="kpi-today">0</strong>
-                                </div>
-                                <div class="kpi-card">
-                                    <span>Receita (Mês)</span>
-                                    <strong id="kpi-revenue">R$ 0</strong>
-                                </div>
-                                <div class="kpi-card">
-                                    <span>Total Clientes</span>
-                                    <strong id="kpi-users">0</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="admin-agendamentos" class="admin-view">
-                            <h3>Gestão de Agenda</h3>
-                            <div class="table-wrapper">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Data</th>
-                                            <th>Hora</th>
-                                            <th>Cliente</th>
-                                            <th>Serviço</th>
-                                            <th>Profissional</th>
-                                            <th>Status</th>
-                                            <th>Ação</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="admin-appointments-table"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div id="admin-servicos" class="admin-view">
-                            <div class="view-header">
-                                <h3>Catálogo de Serviços</h3>
-                                <button class="btn-primary small" onclick="openModal('service-modal')">+ Novo</button>
-                            </div>
-                            <div id="admin-services-grid" class="grid-cards-admin"></div>
-                        </div>
-
-                        <div id="admin-barbeiros" class="admin-view">
-                            <div class="view-header">
-                                <h3>Equipe</h3>
-                                <button class="btn-primary small" onclick="openModal('barber-modal')">+ Novo</button>
-                            </div>
-                            <div id="admin-barbers-grid" class="grid-cards-admin"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <div id="login-modal" class="modal-overlay hidden">
-        <div class="modal glass">
-            <button class="close-modal">&times;</button>
-            <h3>Acesso</h3>
-            <form id="auth-form">
-                <input type="email" id="email" placeholder="E-mail" required>
-                <input type="password" id="password" placeholder="Senha" required>
-                <button type="submit" class="btn-primary full">Entrar / Cadastrar</button>
-                <p class="modal-hint">Se não tiver conta, ela será criada automaticamente.</p>
-            </form>
         </div>
     </div>
 
-    <div id="service-modal" class="modal-overlay hidden">
-        <div class="modal glass">
-            <button class="close-modal">&times;</button>
-            <h3>Serviço</h3>
-            <form id="admin-service-form">
-                <input type="hidden" id="service-id">
-                <label>Nome</label>
-                <input type="text" id="service-name" required>
-                <label>Preço (R$)</label>
-                <input type="number" id="service-price" step="0.01" required>
-                <label>Duração (min)</label>
-                <input type="number" id="service-duration" required>
-                <button type="submit" class="btn-primary full">Salvar</button>
-            </form>
-        </div>
-    </div>
+    <script type="module">
+        // Importações do Firebase v9
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            onAuthStateChanged, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            query, 
+            where, 
+            getDocs, 
+            onSnapshot,
+            orderBy,
+            deleteDoc,
+            doc
+        } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-    <div id="barber-modal" class="modal-overlay hidden">
-        <div class="modal glass">
-            <button class="close-modal">&times;</button>
-            <h3>Profissional</h3>
-            <form id="admin-barber-form">
-                <input type="hidden" id="barber-id">
-                <label>Nome</label>
-                <input type="text" id="barber-name" required>
-                <label>Especialidade</label>
-                <input type="text" id="barber-specialty" placeholder="Ex: Barba, Corte Moderno">
-                <button type="submit" class="btn-primary full">Salvar</button>
-            </form>
-        </div>
-    </div>
+        // CONFIGURAÇÃO (Sua Config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCHR2POfEPFGG-AbajaEsnBk32bvrru5uM",
+            authDomain: "dbyd-5201e.firebaseapp.com",
+            projectId: "dbyd-5201e",
+            storageBucket: "dbyd-5201e.firebasestorage.app",
+            messagingSenderId: "376910752424",
+            appId: "1:376910752424:web:d64d958c177bdd01e3f09d"
+        };
 
-    <div id="notification" class="hidden">Mensagem aqui</div>
+        // Inicialização
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="app.js"></script>
+        // --- ESTADO GLOBAL ---
+        let currentUser = null;
+        let selectedTime = null;
+
+        // --- DOM ELEMENTS ---
+        const authScreen = document.getElementById('auth-screen');
+        const clientScreen = document.getElementById('client-screen');
+        const adminScreen = document.getElementById('admin-screen');
+        
+        const emailInput = document.getElementById('email');
+        const passInput = document.getElementById('password');
+        const errorMsg = document.getElementById('auth-error');
+
+        // --- 1. AUTENTICAÇÃO ---
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                authScreen.classList.add('hidden');
+                // Lógica Simples de Admin: Se o email for admin@barber.com
+                if(user.email === 'admin@barber.com') {
+                    showAdminDashboard();
+                } else {
+                    showClientDashboard(user);
+                }
+            } else {
+                authScreen.classList.remove('hidden');
+                clientScreen.classList.add('hidden');
+                adminScreen.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('btnLogin').addEventListener('click', () => {
+            signInWithEmailAndPassword(auth, emailInput.value, passInput.value)
+                .catch(err => errorMsg.innerText = "Erro: " + err.message);
+        });
+
+        document.getElementById('btnRegister').addEventListener('click', () => {
+            createUserWithEmailAndPassword(auth, emailInput.value, passInput.value)
+                .catch(err => errorMsg.innerText = "Erro: " + err.message);
+        });
+
+        const logout = () => signOut(auth).then(() => window.location.reload());
+        document.getElementById('btnLogout').addEventListener('click', logout);
+        document.getElementById('btnLogoutAdmin').addEventListener('click', logout);
+
+        // --- 2. LÓGICA DO CLIENTE ---
+
+        function showClientDashboard(user) {
+            clientScreen.classList.remove('hidden');
+            document.getElementById('user-name').innerText = user.email.split('@')[0];
+            loadMyAppointments(user.uid);
+        }
+
+        // Listener para Data selecionada
+        const dateInput = document.getElementById('date-select');
+        dateInput.addEventListener('change', async (e) => {
+            const date = e.target.value;
+            if(!date) return;
+            loadTimeSlots(date);
+        });
+
+        // Função principal: Gerar Horários e checar disponibilidade
+        async function loadTimeSlots(date) {
+            const container = document.getElementById('slots-container');
+            container.innerHTML = "Carregando...";
+
+            // 1. Buscar agendamentos existentes no banco para essa data
+            const q = query(collection(db, "appointments"), where("date", "==", date));
+            const querySnapshot = await getDocs(q);
+            const takenTimes = [];
+            querySnapshot.forEach((doc) => {
+                takenTimes.push(doc.data().time);
+            });
+
+            // 2. Gerar slots (Ex: 09:00 as 18:00)
+            const openHour = 9;
+            const closeHour = 18;
+            container.innerHTML = ""; // Limpar
+
+            for (let i = openHour; i < closeHour; i++) {
+                // Hora cheia e meia hora
+                const times = [`${i}:00`, `${i}:30`];
+                
+                times.forEach(time => {
+                    // Formatar hora (ex: 9:00 -> 09:00)
+                    const formattedTime = time.length === 4 ? '0' + time : time;
+                    
+                    const btn = document.createElement('div');
+                    btn.innerText = formattedTime;
+                    btn.classList.add('time-slot');
+
+                    // Verificar se já está ocupado
+                    if(takenTimes.includes(formattedTime)) {
+                        btn.classList.add('disabled');
+                        btn.title = "Horário ocupado";
+                    } else {
+                        btn.onclick = () => selectSlot(formattedTime, btn);
+                    }
+
+                    container.appendChild(btn);
+                });
+            }
+        }
+
+        function selectSlot(time, element) {
+            // UI: Remover seleção anterior
+            document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            selectedTime = time;
+            
+            // Mostrar botão de confirmação
+            const service = document.getElementById('service-select').value;
+            const date = document.getElementById('date-select').value;
+            
+            document.getElementById('summary-text').innerText = `${service} em ${date} às ${time}`;
+            document.getElementById('confirm-section').classList.remove('hidden');
+        }
+
+        // Salvar no Banco
+        document.getElementById('btn-confirm-booking').addEventListener('click', async () => {
+            if(!selectedTime) return;
+            
+            const service = document.getElementById('service-select').value;
+            const date = document.getElementById('date-select').value;
+
+            try {
+                await addDoc(collection(db, "appointments"), {
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    service: service,
+                    date: date,
+                    time: selectedTime,
+                    createdAt: new Date()
+                });
+                
+                alert("Agendamento confirmado com sucesso!");
+                window.location.reload(); // Recarrega para limpar
+            } catch (e) {
+                alert("Erro ao agendar: " + e.message);
+            }
+        });
+
+        // Carregar Meus Agendamentos
+        function loadMyAppointments(uid) {
+            const list = document.getElementById('my-appointments-list');
+            const q = query(
+                collection(db, "appointments"), 
+                where("userId", "==", uid),
+                orderBy("date"), 
+                orderBy("time")
+            );
+
+            // Ouvinte em tempo real para o cliente também
+            onSnapshot(q, (snapshot) => {
+                list.innerHTML = "";
+                if(snapshot.empty) {
+                    list.innerHTML = "<p>Nenhum agendamento futuro.</p>";
+                    return;
+                }
+
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const item = document.createElement('div');
+                    item.classList.add('appointment-card');
+                    item.innerHTML = `
+                        <div>
+                            <strong>${data.date} às ${data.time}</strong><br>
+                            <small>${data.service}</small>
+                        </div>
+                        <button class="danger" style="width:auto; padding:5px 10px; font-size:12px;" onclick="cancelAppt('${docSnap.id}')">X</button>
+                    `;
+                    list.appendChild(item);
+                });
+            });
+        }
+
+        // Função Global para cancelar (precisa estar no window para o HTML acessar)
+        window.cancelAppt = async (id) => {
+            if(confirm("Deseja cancelar este agendamento?")) {
+                await deleteDoc(doc(db, "appointments", id));
+            }
+        };
+
+        // --- 3. LÓGICA DO ADMIN ---
+
+        function showAdminDashboard() {
+            adminScreen.classList.remove('hidden');
+            const list = document.getElementById('admin-appointments-list');
+            
+            // Query simples: Pega tudo ordenado por data
+            const q = query(collection(db, "appointments"), orderBy("date"), orderBy("time"));
+
+            onSnapshot(q, (snapshot) => {
+                list.innerHTML = "";
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const item = document.createElement('div');
+                    item.classList.add('appointment-card');
+                    item.innerHTML = `
+                        <div>
+                            <strong>${data.date} - ${data.time}</strong><br>
+                            <span style="color:#aaa">${data.userEmail}</span><br>
+                            <small style="color:var(--accent-color)">${data.service}</small>
+                        </div>
+                        <button class="danger" style="width:auto;" onclick="cancelAppt('${docSnap.id}')">Cancelar</button>
+                    `;
+                    list.appendChild(item);
+                });
+            });
+        }
+
+    </script>
 </body>
 </html>
