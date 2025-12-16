@@ -2,247 +2,248 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BarberTime | Glass Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BarberTime | Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --accent-color: #00d2ff; /* Ciano Neon */
-            --accent-gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
-            --text-color: #ffffff;
-            --danger-color: #ff4b4b;
+            --glass-bg: rgba(20, 20, 35, 0.65);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --primary: #00f2ff;
+            --primary-hover: #00c8d4;
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --danger: #ff4b4b;
+            --bg-gradient: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 100%);
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: #0f0c29;
-            background-image: linear-gradient(315deg, #0f0c29 0%, #302b63 74%, #24243e 100%);
-            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
             overflow-x: hidden;
         }
 
-        /* --- BACKGROUND BLOBS (O Segredo do Glassmorphism) --- */
-        .background-blobs {
+        /* Background Effects */
+        .orb {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-        .blob {
-            position: absolute;
+            border-radius: 50%;
             filter: blur(80px);
             z-index: -1;
-            opacity: 0.6;
-            animation: float 10s infinite ease-in-out alternate;
+            opacity: 0.5;
+            animation: float 10s infinite ease-in-out;
         }
-        .blob-1 {
-            top: -10%; left: -10%; width: 500px; height: 500px;
-            background: #ff00cc;
-        }
-        .blob-2 {
-            bottom: -10%; right: -10%; width: 400px; height: 400px;
-            background: #333399;
-            animation-delay: -5s;
-        }
-        .blob-3 {
-            top: 40%; left: 40%; width: 300px; height: 300px;
-            background: #00d2ff;
-            opacity: 0.4;
-        }
+        .orb-1 { top: -100px; left: -100px; width: 300px; height: 300px; background: #7000ff; }
+        .orb-2 { bottom: -100px; right: -100px; width: 250px; height: 250px; background: #00f2ff; animation-delay: -5s; }
 
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(30px, 50px); }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(20px); } }
 
-        /* --- GLASS CONTAINER --- */
+        /* Card Container */
         .glass-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: var(--glass-border);
             box-shadow: var(--glass-shadow);
-            border-radius: 20px;
-            padding: 40px;
+            border-radius: 24px;
+            padding: 30px;
             width: 100%;
-            max-width: 480px;
-            margin: 20px;
-            transition: 0.3s;
+            max-width: 420px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        h1, h2, h3 { margin-top: 0; text-align: center; font-weight: 600; letter-spacing: 1px;}
-        h1 { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1, h2 { margin: 0 0 10px 0; text-align: center; font-weight: 600; }
+        h1 { background: linear-gradient(90deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { color: var(--text-muted); text-align: center; font-size: 0.9rem; margin-bottom: 25px; }
 
-        /* --- INPUTS & BUTTONS --- */
+        /* Inputs */
+        .input-group { margin-bottom: 15px; position: relative; }
+        
         input, select {
             width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            background: rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            border-radius: 12px;
             color: #fff;
+            font-size: 1rem;
             outline: none;
-            box-sizing: border-box;
+            transition: 0.3s;
             font-family: inherit;
         }
         
         input:focus, select:focus {
-            border-color: var(--accent-color);
-            background: rgba(0, 0, 0, 0.5);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 242, 255, 0.1);
+            background: rgba(0, 0, 0, 0.6);
         }
 
-        /* Muda a cor do ícone de calendário para branco */
-        input[type="date"] { color-scheme: dark; }
-
+        /* Buttons */
         button {
             width: 100%;
-            padding: 15px;
-            margin-top: 15px;
+            padding: 16px;
             border: none;
-            border-radius: 50px; /* Botão Pill */
-            background: var(--accent-gradient);
-            color: #fff;
-            font-weight: 600;
+            border-radius: 12px;
+            background: var(--primary);
+            color: #000;
+            font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
-            transition: transform 0.2s;
+            transition: transform 0.2s, background 0.2s;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        button:active { transform: scale(0.98); }
-        button.secondary { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); box-shadow: none; }
-        button.danger { background: var(--danger-color); box-shadow: 0 4px 15px rgba(255, 75, 75, 0.3); }
+        button:active { transform: scale(0.96); }
+        button:disabled { opacity: 0.7; cursor: not-allowed; filter: grayscale(0.5); }
+        
+        button.secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            text-transform: none;
+        }
+        button.secondary:hover { background: rgba(255,255,255,0.05); }
 
-        /* --- GRID DE HORÁRIOS --- */
+        /* Error Message Box */
+        .error-box {
+            background: rgba(255, 75, 75, 0.1);
+            border: 1px solid rgba(255, 75, 75, 0.3);
+            color: #ff6b6b;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+        .error-box.visible { display: block; animation: shake 0.3s; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Grid Slots */
         .slots-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 10px;
             margin-top: 20px;
         }
-
         .time-slot {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 12px;
+            border-radius: 10px;
+            padding: 10px 5px;
             text-align: center;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: 0.3s;
-            font-size: 0.9rem;
+            transition: 0.2s;
         }
+        .time-slot.selected { background: var(--primary); color: #000; border-color: var(--primary); font-weight: bold; }
+        .time-slot.disabled { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
 
-        .time-slot:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255,255,255,0.3); }
-        
-        .time-slot.selected {
-            background: var(--accent-gradient);
-            border-color: transparent;
-            color: white;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
-        }
-
-        .time-slot.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            text-decoration: line-through;
-            background: transparent;
-        }
-
-        /* --- CARDS DE LISTA --- */
-        .appointment-card {
-            background: rgba(0, 0, 0, 0.2);
-            border-left: 4px solid var(--accent-color);
+        /* List Items */
+        .appt-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
             padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-left: 3px solid var(--primary);
         }
 
         .hidden { display: none !important; }
-        .text-center { text-align: center; }
-        .label { font-size: 0.85rem; color: #aaa; margin-left: 5px; }
 
+        /* Mobile specific adjustments */
+        @media (max-width: 400px) {
+            .glass-card { padding: 20px; }
+            h1 { font-size: 1.5rem; }
+            .slots-grid { grid-template-columns: repeat(3, 1fr); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="background-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
     <div class="glass-card">
         
         <div id="auth-screen">
             <h1>BarberTime</h1>
-            <p class="text-center" style="opacity: 0.8">Agendamento Exclusivo</p>
+            <p>Entre para agendar seu estilo.</p>
             
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="password" placeholder="Senha">
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Seu E-mail" autocomplete="email">
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Sua Senha (mín. 6 dígitos)" autocomplete="current-password">
+            </div>
             
-            <button id="btnLogin">ENTRAR</button>
-            <button id="btnRegister" class="secondary">CRIAR CONTA</button>
+            <button id="btnLogin">Entrar</button>
+            <button id="btnRegister" class="secondary">Criar Nova Conta</button>
             
-            <p id="auth-error" class="text-center" style="color:var(--danger-color); margin-top:10px;"></p>
+            <div id="auth-error" class="error-box"></div>
         </div>
 
         <div id="client-screen" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                <span style="font-size: 1.2rem;">Olá, <b id="user-name">...</b> 👋</span>
-                <button id="btnLogout" class="secondary" style="width:auto; padding: 8px 15px; margin:0; font-size:0.8rem">Sair</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <span style="font-size: 0.9rem; color:var(--text-muted)">Olá, <b style="color:#fff" id="user-name">User</b></span>
+                <button id="btnLogout" class="secondary" style="width: auto; padding: 8px 12px; margin:0; font-size:0.75rem;">SAIR</button>
             </div>
-            
-            <div id="booking-section">
-                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px;">
-                    <h3 style="text-align: left; font-size: 1rem; margin-bottom: 15px;">Novo Corte</h3>
-                    
-                    <span class="label">Serviço</span>
-                    <select id="service-select">
-                        <option value="Corte Cabelo - R$40">✂️ Corte Cabelo (R$40)</option>
-                        <option value="Barba - R$30">🪒 Barba (R$30)</option>
-                        <option value="Completo - R$60">💎 Cabelo + Barba (R$60)</option>
-                    </select>
 
-                    <span class="label">Data Desejada</span>
-                    <input type="date" id="date-select">
+            <div style="background: rgba(0,0,0,0.2); border-radius:16px; padding:20px; margin-bottom:20px;">
+                <h3 style="margin:0 0 15px 0; font-size:1rem; color:var(--primary);">Novo Agendamento</h3>
+                
+                <select id="service-select">
+                    <option value="Corte Cabelo - R$40">✂️ Corte Cabelo (R$40)</option>
+                    <option value="Barba - R$30">🪒 Barba (R$30)</option>
+                    <option value="Completo - R$60">💎 Completo (R$60)</option>
+                </select>
 
-                    <div id="slots-container" class="slots-grid">
-                        <p style="grid-column: span 3; text-align:center; opacity:0.5; font-size:0.9rem;">Selecione a data acima.</p>
+                <input type="date" id="date-select" style="margin-top:10px;">
+
+                <div id="slots-container" class="slots-grid">
+                    <div style="grid-column: span 3; text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem;">
+                        👆 Selecione uma data acima
                     </div>
+                </div>
 
-                    <div id="confirm-section" class="hidden" style="margin-top:15px; text-align: center;">
-                        <p style="font-size: 0.9rem;">Agendar para: <br><strong id="summary-text" style="color: var(--accent-color)"></strong>?</p>
-                        <button id="btn-confirm-booking">CONFIRMAR</button>
-                    </div>
+                <div id="confirm-section" class="hidden" style="margin-top:20px;">
+                    <button id="btn-confirm-booking">Confirmar Agendamento</button>
                 </div>
             </div>
 
-            <h3 style="text-align: left; margin-top: 30px; font-size: 1rem;">Meus Agendamentos</h3>
-            <div id="my-appointments-list" style="max-height: 200px; overflow-y: auto; padding-right:5px;">
-                </div>
+            <h4 style="margin: 0 0 10px 0; font-size:0.9rem; color:var(--text-muted);">Meus Horários</h4>
+            <div id="my-appointments-list" style="max-height: 150px; overflow-y: auto;"></div>
         </div>
 
         <div id="admin-screen" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                <h3 style="margin:0">Admin Panel 🛡️</h3>
-                <button id="btnLogoutAdmin" class="secondary" style="width:auto; padding: 8px 15px; margin:0; font-size:0.8rem">Sair</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="font-size:1.2rem; margin:0;">Admin Painel</h2>
+                <button id="btnLogoutAdmin" class="secondary" style="width: auto; padding: 8px 12px; margin:0; font-size:0.75rem;">SAIR</button>
             </div>
-            
-            <div id="admin-appointments-list" style="max-height: 500px; overflow-y: auto;">
-                <p class="text-center">Carregando agenda...</p>
-            </div>
+            <p style="text-align:left; margin-bottom:10px;">Agenda Global:</p>
+            <div id="admin-appointments-list" style="max-height: 400px; overflow-y: auto;"></div>
         </div>
 
     </div>
@@ -252,6 +253,7 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, getDocs, onSnapshot, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+        // SUA CONFIGURAÇÃO
         const firebaseConfig = {
             apiKey: "AIzaSyCHR2POfEPFGG-AbajaEsnBk32bvrru5uM",
             authDomain: "dbyd-5201e.firebaseapp.com",
@@ -265,120 +267,175 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- UI HELPERS ---
+        const ui = {
+            authScreen: document.getElementById('auth-screen'),
+            clientScreen: document.getElementById('client-screen'),
+            adminScreen: document.getElementById('admin-screen'),
+            email: document.getElementById('email'),
+            pass: document.getElementById('password'),
+            errorBox: document.getElementById('auth-error'),
+            btnLogin: document.getElementById('btnLogin'),
+            btnRegister: document.getElementById('btnRegister')
+        };
+
         let currentUser = null;
         let selectedTime = null;
 
-        const authScreen = document.getElementById('auth-screen');
-        const clientScreen = document.getElementById('client-screen');
-        const adminScreen = document.getElementById('admin-screen');
-        const emailInput = document.getElementById('email');
-        const passInput = document.getElementById('password');
-        const errorMsg = document.getElementById('auth-error');
+        // --- TRADUÇÃO DE ERROS (UX MELHORADA) ---
+        function showError(message) {
+            ui.errorBox.innerText = message;
+            ui.errorBox.classList.add('visible');
+            setTimeout(() => ui.errorBox.classList.remove('visible'), 5000);
+        }
 
+        function translateFirebaseError(errorCode) {
+            switch(errorCode) {
+                case 'auth/weak-password': return 'A senha deve ter pelo menos 6 caracteres.';
+                case 'auth/email-already-in-use': return 'Este e-mail já está cadastrado.';
+                case 'auth/invalid-email': return 'Formato de e-mail inválido.';
+                case 'auth/wrong-password': return 'Senha incorreta.';
+                case 'auth/user-not-found': return 'Usuário não encontrado.';
+                case 'auth/internal-error': return 'Erro interno do servidor. Tente novamente.';
+                default: return `Erro desconhecido: ${errorCode}`;
+            }
+        }
+
+        function setLoading(btn, isLoading, textDefault) {
+            if(isLoading) {
+                btn.disabled = true;
+                btn.innerText = "Processando...";
+            } else {
+                btn.disabled = false;
+                btn.innerText = textDefault;
+            }
+        }
+
+        // --- AUTENTICAÇÃO ---
+        
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
-                authScreen.classList.add('hidden');
+                ui.authScreen.classList.add('hidden');
+                ui.errorBox.classList.remove('visible'); // Limpa erros antigos
                 if(user.email === 'admin@barber.com') {
                     showAdminDashboard();
                 } else {
                     showClientDashboard(user);
                 }
             } else {
-                authScreen.classList.remove('hidden');
-                clientScreen.classList.add('hidden');
-                adminScreen.classList.add('hidden');
+                ui.authScreen.classList.remove('hidden');
+                ui.clientScreen.classList.add('hidden');
+                ui.adminScreen.classList.add('hidden');
             }
         });
 
-        document.getElementById('btnLogin').addEventListener('click', () => {
-            signInWithEmailAndPassword(auth, emailInput.value, passInput.value)
-                .catch(err => errorMsg.innerText = "Erro: " + err.message);
+        ui.btnLogin.addEventListener('click', async () => {
+            setLoading(ui.btnLogin, true, "Entrar");
+            try {
+                await signInWithEmailAndPassword(auth, ui.email.value, ui.pass.value);
+            } catch (error) {
+                showError(translateFirebaseError(error.code));
+            } finally {
+                setLoading(ui.btnLogin, false, "Entrar");
+            }
         });
 
-        document.getElementById('btnRegister').addEventListener('click', () => {
-            createUserWithEmailAndPassword(auth, emailInput.value, passInput.value)
-                .catch(err => errorMsg.innerText = "Erro: " + err.message);
+        ui.btnRegister.addEventListener('click', async () => {
+            const email = ui.email.value;
+            const pass = ui.pass.value;
+
+            // Validação local rápida
+            if(pass.length < 6) {
+                showError("A senha precisa ter no mínimo 6 dígitos!");
+                return;
+            }
+
+            setLoading(ui.btnRegister, true, "Criar Nova Conta");
+            try {
+                await createUserWithEmailAndPassword(auth, email, pass);
+            } catch (error) {
+                console.error(error); // Para debug
+                showError(translateFirebaseError(error.code));
+            } finally {
+                setLoading(ui.btnRegister, false, "Criar Nova Conta");
+            }
         });
 
         const logout = () => signOut(auth).then(() => window.location.reload());
         document.getElementById('btnLogout').addEventListener('click', logout);
         document.getElementById('btnLogoutAdmin').addEventListener('click', logout);
 
+        // --- LÓGICA DO CLIENTE ---
+
         function showClientDashboard(user) {
-            clientScreen.classList.remove('hidden');
+            ui.clientScreen.classList.remove('hidden');
             document.getElementById('user-name').innerText = user.email.split('@')[0];
             loadMyAppointments(user.uid);
         }
 
-        const dateInput = document.getElementById('date-select');
-        dateInput.addEventListener('change', async (e) => {
-            const date = e.target.value;
-            if(!date) return;
-            loadTimeSlots(date);
+        document.getElementById('date-select').addEventListener('change', async (e) => {
+            if(!e.target.value) return;
+            loadTimeSlots(e.target.value);
         });
 
         async function loadTimeSlots(date) {
             const container = document.getElementById('slots-container');
-            container.innerHTML = "<p style='grid-column:span 3; text-align:center'>Verificando agenda...</p>";
+            container.innerHTML = "<div style='grid-column:span 3; text-align:center; font-size:0.8rem;'>Carregando horários...</div>";
 
-            const q = query(collection(db, "appointments"), where("date", "==", date));
-            const querySnapshot = await getDocs(q);
-            const takenTimes = [];
-            querySnapshot.forEach((doc) => {
-                takenTimes.push(doc.data().time);
-            });
+            try {
+                const q = query(collection(db, "appointments"), where("date", "==", date));
+                const snapshot = await getDocs(q);
+                const takenTimes = snapshot.docs.map(doc => doc.data().time);
 
-            const openHour = 9;
-            const closeHour = 18;
-            container.innerHTML = "";
+                container.innerHTML = ""; // Limpar
 
-            for (let i = openHour; i < closeHour; i++) {
-                const times = [`${i}:00`, `${i}:30`];
-                times.forEach(time => {
-                    const formattedTime = time.length === 4 ? '0' + time : time;
-                    const btn = document.createElement('div');
-                    btn.innerText = formattedTime;
-                    btn.classList.add('time-slot');
+                for (let i = 9; i < 19; i++) { // 09:00 as 19:00
+                    ['00', '30'].forEach(min => {
+                        const time = `${i < 10 ? '0'+i : i}:${min}`;
+                        const div = document.createElement('div');
+                        div.className = 'time-slot';
+                        div.innerText = time;
 
-                    if(takenTimes.includes(formattedTime)) {
-                        btn.classList.add('disabled');
-                    } else {
-                        btn.onclick = () => selectSlot(formattedTime, btn);
-                    }
-                    container.appendChild(btn);
-                });
+                        if (takenTimes.includes(time)) {
+                            div.classList.add('disabled');
+                        } else {
+                            div.onclick = () => {
+                                document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+                                div.classList.add('selected');
+                                selectedTime = time;
+                                document.getElementById('confirm-section').classList.remove('hidden');
+                            };
+                        }
+                        container.appendChild(div);
+                    });
+                }
+            } catch (err) {
+                container.innerHTML = "<p style='color:red; font-size:0.8rem;'>Erro ao carregar agenda.</p>";
             }
         }
 
-        function selectSlot(time, element) {
-            document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedTime = time;
-            const service = document.getElementById('service-select').value;
-            const date = document.getElementById('date-select').value;
-            document.getElementById('summary-text').innerText = `${service} \n ${date} às ${time}`;
-            document.getElementById('confirm-section').classList.remove('hidden');
-        }
-
-        document.getElementById('btn-confirm-booking').addEventListener('click', async () => {
+        document.getElementById('btn-confirm-booking').addEventListener('click', async function() {
             if(!selectedTime) return;
-            const service = document.getElementById('service-select').value;
-            const date = document.getElementById('date-select').value;
+            const btn = this;
+            btn.disabled = true; 
+            btn.innerText = "Agendando...";
 
             try {
                 await addDoc(collection(db, "appointments"), {
                     userId: currentUser.uid,
                     userEmail: currentUser.email,
-                    service: service,
-                    date: date,
+                    service: document.getElementById('service-select').value,
+                    date: document.getElementById('date-select').value,
                     time: selectedTime,
                     createdAt: new Date()
                 });
-                alert("Agendado com sucesso!");
+                alert("Agendamento realizado!");
                 window.location.reload();
-            } catch (e) {
-                alert("Erro: " + e.message);
+            } catch (err) {
+                alert("Erro: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "Confirmar Agendamento";
             }
         });
 
@@ -389,33 +446,32 @@
             onSnapshot(q, (snapshot) => {
                 list.innerHTML = "";
                 if(snapshot.empty) {
-                    list.innerHTML = "<p style='text-align:center; opacity:0.6'>Sem agendamentos.</p>";
+                    list.innerHTML = "<p style='font-size:0.8rem; opacity:0.6'>Nenhum agendamento.</p>";
                     return;
                 }
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
-                    const item = document.createElement('div');
-                    item.classList.add('appointment-card');
-                    item.innerHTML = `
+                    const el = document.createElement('div');
+                    el.className = 'appt-item';
+                    el.innerHTML = `
                         <div>
-                            <strong>${data.date} às ${data.time}</strong><br>
-                            <small>${data.service}</small>
+                            <div style="font-weight:600; font-size:0.9rem;">${data.date} - ${data.time}</div>
+                            <div style="font-size:0.8rem; opacity:0.7">${data.service}</div>
                         </div>
-                        <button class="danger" style="width:auto; padding:5px 12px; margin-top:0" onclick="cancelAppt('${docSnap.id}')">X</button>
+                        <button onclick="window.cancel('${docSnap.id}')" style="width:auto; padding:5px 10px; font-size:0.7rem; background:rgba(255,255,255,0.1); margin:0;">✖</button>
                     `;
-                    list.appendChild(item);
+                    list.appendChild(el);
                 });
             });
         }
 
-        window.cancelAppt = async (id) => {
-            if(confirm("Cancelar agendamento?")) {
-                await deleteDoc(doc(db, "appointments", id));
-            }
+        window.cancel = async (id) => {
+            if(confirm("Cancelar este horário?")) await deleteDoc(doc(db, "appointments", id));
         };
 
+        // --- LÓGICA ADMIN ---
         function showAdminDashboard() {
-            adminScreen.classList.remove('hidden');
+            ui.adminScreen.classList.remove('hidden');
             const list = document.getElementById('admin-appointments-list');
             const q = query(collection(db, "appointments"), orderBy("date"), orderBy("time"));
 
@@ -423,17 +479,17 @@
                 list.innerHTML = "";
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
-                    const item = document.createElement('div');
-                    item.classList.add('appointment-card');
-                    item.innerHTML = `
+                    const el = document.createElement('div');
+                    el.className = 'appt-item';
+                    el.innerHTML = `
                         <div>
-                            <strong>${data.date} - ${data.time}</strong><br>
-                            <span style="opacity:0.7; font-size:0.9em">${data.userEmail}</span><br>
-                            <small style="color:var(--accent-color)">${data.service}</small>
+                            <div style="font-weight:600; color:var(--primary); font-size:0.9rem;">${data.time} - ${data.date}</div>
+                            <div style="font-size:0.8rem;">${data.userEmail}</div>
+                            <div style="font-size:0.75rem; opacity:0.6">${data.service}</div>
                         </div>
-                        <button class="danger" style="width:auto; margin:0;" onclick="cancelAppt('${docSnap.id}')">X</button>
+                        <button onclick="window.cancel('${docSnap.id}')" style="width:auto; padding:5px 10px; background:var(--danger); margin:0; font-size:0.7rem;">Cancelar</button>
                     `;
-                    list.appendChild(item);
+                    list.appendChild(el);
                 });
             });
         }
